@@ -3,11 +3,12 @@ import Header from './components/Header'
 import About from './components/About'
 import HomePostersPreview from './components/HomePostersPreview'
 import CaseStudies from './components/CaseStudies'
-import Posters from './components/Posters'
 import Projects from './components/Projects'
 import Podcast from './components/Podcast'
 import Contact from './components/Contact'
 import { portfolioContent } from './content'
+
+const Posters = React.lazy(async () => import('./components/Posters'))
 
 export default function App(): React.ReactElement {
   const { name } = portfolioContent.profile
@@ -18,7 +19,18 @@ export default function App(): React.ReactElement {
       <Header isPostersPage={isPostersPage} />
       {isPostersPage ? (
         <main className="deck">
-          <Posters />
+          <React.Suspense
+            fallback={(
+              <section className="deck-section">
+                <div className="section-shell">
+                  <p className="section-kicker">LOADING</p>
+                  <h2>Preparing Posters</h2>
+                </div>
+              </section>
+            )}
+          >
+            <Posters />
+          </React.Suspense>
         </main>
       ) : (
         <main className="deck home-main">

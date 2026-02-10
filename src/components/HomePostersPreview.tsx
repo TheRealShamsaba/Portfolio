@@ -21,7 +21,13 @@ export default function HomePostersPreview(): React.ReactElement {
         <div className="home-posters-grid">
           {featured.map((poster) => (
             <article key={poster.id} className="reveal-item home-poster-tile">
-              <img className="home-poster-image" src={encodeURI(poster.image)} alt={poster.title} />
+              <img
+                className="home-poster-image"
+                src={encodeURI(poster.image)}
+                alt={poster.title}
+                loading="lazy"
+                decoding="async"
+              />
               <div className="home-poster-copy">
                 <p className="text-xs uppercase tracking-[0.14em] text-gray-500">{poster.category}</p>
                 <h3 className="text-lg mt-1">{poster.title}</h3>

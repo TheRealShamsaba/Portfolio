@@ -219,7 +219,13 @@ export default function Posters(): React.ReactElement {
                             aria-hidden="true"
                             style={{ background: `radial-gradient(circle, ${hexToRgba(theme.glow, 0.5)} 0%, transparent 70%)` }}
                           />
-                          <img className="poster-image" src={encodeURI(poster.image)} alt={poster.title} />
+                          <img
+                            className="poster-image"
+                            src={encodeURI(poster.image)}
+                            alt={poster.title}
+                            loading="lazy"
+                            decoding="async"
+                          />
                         </button>
 
                         <div className="poster-caption">

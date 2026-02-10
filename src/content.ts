@@ -51,7 +51,7 @@ export const portfolioContent = {
   profile: {
     name: 'Arian Shamsabadi',
     role: 'Computer engineering student in Istanbul building clean web products and visual work.',
-    avatar: '/profile.jpg',
+    avatar: '/profile.webp',
     intro:
       'I build with React, TypeScript, and Vite, and I focus on clean structure, clear UI, and shipped work.',
     about:
@@ -70,7 +70,7 @@ export const portfolioContent = {
     {
       id: 'concept-greatness-and-honor',
       title: 'Greatness and Honor',
-      image: '/posters/concept-greatness-and-honor.jpg',
+      image: '/posters/concept-greatness-and-honor.webp',
       category: 'concept',
       tags: ['values', 'legacy', 'discipline', 'character', 'mindset'],
       explicit: false,
@@ -79,7 +79,7 @@ export const portfolioContent = {
     {
       id: 'concept-impermanence',
       title: 'Impermanence',
-      image: '/posters/concept-impermanence.jpg',
+      image: '/posters/concept-impermanence.webp',
       category: 'concept',
       tags: ['change', 'time', 'reflection', 'philosophy', 'adaptation'],
       explicit: false,
@@ -88,7 +88,7 @@ export const portfolioContent = {
     {
       id: 'concept-many-answers-one-choice',
       title: 'Many Answers One Choice',
-      image: '/posters/concept-many-answers-one-choice.jpg',
+      image: '/posters/concept-many-answers-one-choice.webp',
       category: 'concept',
       tags: ['decision making', 'strategy', 'priorities', 'tradeoffs', 'focus'],
       explicit: false,
@@ -97,7 +97,7 @@ export const portfolioContent = {
     {
       id: 'concept-perspective',
       title: 'Perspective',
-      image: '/posters/concept-perspective.png',
+      image: '/posters/concept-perspective.webp',
       category: 'concept',
       tags: ['viewpoint', 'context', 'interpretation', 'critical thinking', 'analysis'],
       explicit: false,
@@ -106,7 +106,7 @@ export const portfolioContent = {
     {
       id: 'concept-small-steps-big-mountains',
       title: 'Small Steps Big Mountains',
-      image: '/posters/concept-small-steps-big-mountains.jpg',
+      image: '/posters/concept-small-steps-big-mountains.webp',
       category: 'identity',
       tags: ['growth', 'consistency', 'progress', 'discipline', 'long term'],
       explicit: false,
@@ -115,7 +115,7 @@ export const portfolioContent = {
     {
       id: 'concept-teamwork',
       title: 'Teamwork',
-      image: '/posters/concept-teamwork.jpg',
+      image: '/posters/concept-teamwork.webp',
       category: 'concept',
       tags: ['collaboration', 'coordination', 'roles', 'trust', 'shared goals'],
       explicit: false,
@@ -124,7 +124,7 @@ export const portfolioContent = {
     {
       id: 'concept-think-think',
       title: 'Think Think',
-      image: '/posters/concept-think-think.jpg',
+      image: '/posters/concept-think-think.webp',
       category: 'concept',
       tags: ['reasoning', 'logic', 'reflection', 'problem solving', 'clarity'],
       explicit: false,
@@ -133,7 +133,7 @@ export const portfolioContent = {
     {
       id: 'identity-be-the-man-you-want',
       title: 'Be the Person You Want',
-      image: '/posters/identity-be-the-man-you-want.png',
+      image: '/posters/identity-be-the-man-you-want.webp',
       category: 'identity',
       tags: ['self development', 'character', 'intentional living', 'discipline', 'identity'],
       explicit: false,
@@ -142,7 +142,7 @@ export const portfolioContent = {
     {
       id: 'identity-embrace-duality',
       title: 'Embrace Duality',
-      image: '/posters/identity-embrace-duality.jpg',
+      image: '/posters/identity-embrace-duality.webp',
       category: 'identity',
       tags: ['balance', 'complexity', 'self awareness', 'contrast', 'identity'],
       explicit: false,
@@ -151,7 +151,7 @@ export const portfolioContent = {
     {
       id: 'identity-loyalty',
       title: 'Loyalty',
-      image: '/posters/identity-loyalty.jpg',
+      image: '/posters/identity-loyalty.webp',
       category: 'identity',
       tags: ['values', 'trust', 'commitment', 'integrity', 'relationships'],
       explicit: false,
@@ -160,7 +160,7 @@ export const portfolioContent = {
     {
       id: 'identity-persian-thought',
       title: 'Persian Thought',
-      image: '/posters/identity-persian-thought.jpg',
+      image: '/posters/identity-persian-thought.webp',
       category: 'identity',
       tags: ['culture', 'heritage', 'identity', 'history', 'expression'],
       explicit: false,
@@ -169,7 +169,7 @@ export const portfolioContent = {
     {
       id: 'identity-stay-close',
       title: 'Stay Close',
-      image: '/posters/identity-stay-close.png',
+      image: '/posters/identity-stay-close.webp',
       category: 'concept',
       tags: ['connection', 'relationships', 'support', 'proximity', 'empathy'],
       explicit: false,
@@ -178,7 +178,7 @@ export const portfolioContent = {
     {
       id: 'identity-every-photo-has-a-story',
       title: 'Every Photo Has a Story',
-      image: '/posters/identity-every-photo-has-a-story.png',
+      image: '/posters/identity-every-photo-has-a-story.webp',
       category: 'identity',
       tags: ['identity', 'memory', 'storytelling', 'emotion', 'self expression'],
       explicit: false,
@@ -187,7 +187,7 @@ export const portfolioContent = {
     {
       id: 'identity-life-sometimes-too-late',
       title: 'Sometimes It Is Too Late',
-      image: '/posters/identity-life-sometimes-too-late.png',
+      image: '/posters/identity-life-sometimes-too-late.webp',
       category: 'identity',
       tags: ['identity', 'regret', 'reflection', 'choices', 'personal growth'],
       explicit: false,
@@ -196,7 +196,7 @@ export const portfolioContent = {
     {
       id: 'media-reasonable-show-cover-01',
       title: 'Reasonable Show Cover One',
-      image: '/posters/media-reasonable-show-cover-01.jpg',
+      image: '/posters/media-reasonable-show-cover-01.webp',
       category: 'media',
       tags: ['podcast cover', 'series identity', 'brand consistency', 'cover art', 'platform design'],
       explicit: false,
@@ -205,7 +205,7 @@ export const portfolioContent = {
     {
       id: 'media-reasonable-show-cover-02',
       title: 'Reasonable Show Cover Two',
-      image: '/posters/media-reasonable-show-cover-02.jpg',
+      image: '/posters/media-reasonable-show-cover-02.webp',
       category: 'media',
       tags: ['podcast cover', 'variant design', 'series identity', 'cover art', 'platform design'],
       explicit: false,
@@ -214,7 +214,7 @@ export const portfolioContent = {
     {
       id: 'media-reasonable-show-episode-0-2',
       title: 'Reasonable Show Episode Art',
-      image: '/posters/media-reasonable-show-episode-0-2.png',
+      image: '/posters/media-reasonable-show-episode-0-2.webp',
       category: 'media',
       tags: ['episode thumbnail', 'podcast artwork', 'distribution asset', 'episode branding', 'media design'],
       explicit: false,
@@ -223,7 +223,7 @@ export const portfolioContent = {
     {
       id: 'media-reasonable-show-portrait',
       title: 'Reasonable Show Portrait',
-      image: '/posters/media-reasonable-show-portrait.png',
+      image: '/posters/media-reasonable-show-portrait.webp',
       category: 'media',
       tags: ['host portrait', 'show branding', 'media profile', 'content identity', 'platform asset'],
       explicit: false,
@@ -232,7 +232,7 @@ export const portfolioContent = {
     {
       id: 'satire-handle-with-care',
       title: 'Handle With Care',
-      image: '/posters/satire-handle-with-care.png',
+      image: '/posters/satire-handle-with-care.webp',
       category: 'satire',
       tags: ['irony', 'social commentary', 'warning metaphor', 'dark humor', 'critical tone'],
       explicit: false,
@@ -241,7 +241,7 @@ export const portfolioContent = {
     {
       id: 'satire-maximum-effort',
       title: 'Maximum Effort',
-      image: '/posters/satire-maximum-effort.jpg',
+      image: '/posters/satire-maximum-effort.webp',
       category: 'satire',
       tags: ['irony', 'performance culture', 'expectations', 'dark humor', 'commentary'],
       explicit: false,
@@ -250,7 +250,7 @@ export const portfolioContent = {
     {
       id: 'satire-searching-for-an-answer',
       title: 'Searching for an Answer',
-      image: '/posters/satire-searching-for-an-answer.jpg',
+      image: '/posters/satire-searching-for-an-answer.webp',
       category: 'satire',
       tags: ['irony', 'uncertainty', 'social critique', 'dark humor', 'questioning'],
       explicit: false,

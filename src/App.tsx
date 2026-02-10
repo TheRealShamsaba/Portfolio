@@ -6,12 +6,21 @@ import CaseStudies from './components/CaseStudies'
 import Projects from './components/Projects'
 import Podcast from './components/Podcast'
 import Contact from './components/Contact'
-import { portfolioContent } from './content'
+import { I18nProvider, useI18n } from './i18n'
 
 const Posters = React.lazy(async () => import('./components/Posters'))
 
 export default function App(): React.ReactElement {
-  const { name } = portfolioContent.profile
+  return (
+    <I18nProvider>
+      <AppShell />
+    </I18nProvider>
+  )
+}
+
+function AppShell(): React.ReactElement {
+  const { content, t } = useI18n()
+  const { name } = content.profile
   const isPostersPage = typeof window !== 'undefined' && window.location.pathname.startsWith('/showcase')
 
   return (
@@ -23,8 +32,8 @@ export default function App(): React.ReactElement {
             fallback={(
               <section className="deck-section">
                 <div className="section-shell">
-                  <p className="section-kicker">LOADING</p>
-                  <h2>Preparing Posters</h2>
+                  <p className="section-kicker">{t.loading}</p>
+                  <h2>{t.loadingPosters}</h2>
                 </div>
               </section>
             )}
@@ -49,7 +58,7 @@ export default function App(): React.ReactElement {
         </main>
       )}
       <footer className="py-8 px-4 text-center text-sm footer-note">
-        © {new Date().getFullYear()} {name} - Built with React + Vite + Tailwind
+        © {new Date().getFullYear()} {name} - {t.footerBuiltWith}
       </footer>
     </div>
   )

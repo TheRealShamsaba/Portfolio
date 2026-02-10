@@ -1,13 +1,16 @@
 import React from 'react'
-import { portfolioContent } from '../content'
+import { useI18n } from '../i18n'
 
 interface HeaderProps {
   isPostersPage?: boolean
 }
 
 export default function Header({ isPostersPage = false }: HeaderProps): React.ReactElement {
-  const { name, avatar } = portfolioContent.profile
+  const { locale, setLocale, t, content } = useI18n()
+  const { name, avatar } = content.profile
   const homePrefix = isPostersPage ? '/' : ''
+  const langQuery = locale === 'fa' ? '?lang=fa' : ''
+  const showcaseHref = `/showcase${langQuery}`
 
   return (
     <header className="sticky top-0 z-50 site-header">
@@ -19,7 +22,7 @@ export default function Header({ isPostersPage = false }: HeaderProps): React.Re
             alt={`${name} avatar`}
           />
           <div>
-            <p className="text-sm uppercase tracking-[0.18em] text-gray-500">Portfolio</p>
+            <p className="text-sm uppercase tracking-[0.18em] text-gray-500">{t.brand}</p>
             <p className="text-base font-semibold text-gray-900 leading-none">{name}</p>
           </div>
         </div>
@@ -27,23 +30,30 @@ export default function Header({ isPostersPage = false }: HeaderProps): React.Re
         <div className="flex items-center gap-3 sm:gap-7">
           <nav className="hidden md:flex gap-5">
             <a href={`${homePrefix}#about`} className="nav-link">
-              About
+              {t.navAbout}
             </a>
-            <a href="/showcase" className="nav-link">
-              Posters
+            <a href={showcaseHref} className="nav-link">
+              {t.navPosters}
             </a>
             <a href={`${homePrefix}#case-studies`} className="nav-link">
-              Work
+              {t.navWork}
             </a>
             <a href={`${homePrefix}#podcast`} className="nav-link">
-              Podcast
+              {t.navPodcast}
             </a>
           </nav>
+          <button
+            type="button"
+            className="btn btn-secondary text-sm"
+            onClick={() => setLocale(locale === 'en' ? 'fa' : 'en')}
+          >
+            {t.langToggle}
+          </button>
           <a
             href={`${homePrefix}#contact`}
             className="btn btn-secondary text-sm"
           >
-            Contact
+            {t.navContact}
           </a>
         </div>
       </div>

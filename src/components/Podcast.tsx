@@ -1,5 +1,5 @@
 import React from 'react'
-import { portfolioContent } from '../content'
+import { useI18n } from '../i18n'
 
 function getEmbedUrl(url: string): string | null {
   if (!url || url === '#') return null
@@ -32,7 +32,8 @@ function getEmbedUrl(url: string): string | null {
 }
 
 export default function Podcast(): React.ReactElement {
-  const podcast = portfolioContent.podcast
+  const { content, t } = useI18n()
+  const podcast = content.podcast
   const latestEpisodeUrl = podcast.latestEpisodeUrl ?? podcast.listenLink
   const embedUrl = getEmbedUrl(latestEpisodeUrl)
 
@@ -40,8 +41,8 @@ export default function Podcast(): React.ReactElement {
     <section id="podcast" className="deck-section reveal home-section">
       <div className="section-shell">
         <div className="reveal-item mb-10">
-          <p className="section-kicker">VOICE</p>
-          <h2>Podcast</h2>
+          <p className="section-kicker">{t.podcastKicker}</p>
+          <h2>{t.podcastTitle}</h2>
         </div>
 
         <div className="reveal-item lift-card podcast-card">
@@ -61,14 +62,14 @@ export default function Podcast(): React.ReactElement {
           ) : (
             <div className="mb-5 rounded-xl border border-dashed border-gray-300 bg-white/60 p-4">
               <p className="text-sm">
-                Add `latestEpisodeUrl` in `src/content.ts` to show the embedded latest episode player.
+                {t.missingEmbed}
               </p>
             </div>
           )}
 
           <div className="flex flex-wrap gap-4 items-center podcast-actions">
             <a href={latestEpisodeUrl} className="btn btn-primary text-sm">
-              Listen to Latest Episode
+              {t.listenLatest}
             </a>
             <span className="text-sm">{podcast.platforms}</span>
           </div>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { categoryMeta, portfolioContent } from '../content'
+import { useI18n } from '../i18n'
 
 function hexToRgba(hex: string, alpha: number): string {
   const normalized = hex.replace('#', '')
@@ -38,34 +38,35 @@ function parseCategoryFromQuery(): PosterFilter {
 }
 
 export default function Posters(): React.ReactElement {
-  const posters = portfolioContent.posters
+  const { content, t, localizedCategoryMeta } = useI18n()
+  const posters = content.posters
   const [activeCategory, setActiveCategory] = React.useState<PosterFilter>(() => parseCategoryFromQuery())
   const [activePosterId, setActivePosterId] = React.useState<string | null>(null)
 
   const groups = [
     {
       key: 'concept' as const,
-      title: 'Concept',
-      subtitle: 'Posters where I explore ideas, systems, and meaning.',
-      display: 'CONCEPT'
+      title: t.categoryLabel.concept,
+      subtitle: localizedCategoryMeta.concept.desc,
+      display: t.categoryLabel.concept
     },
     {
       key: 'identity' as const,
-      title: 'Identity',
-      subtitle: 'Work about growth, values, culture, and self-expression.',
-      display: 'IDENTITY'
+      title: t.categoryLabel.identity,
+      subtitle: localizedCategoryMeta.identity.desc,
+      display: t.categoryLabel.identity
     },
     {
       key: 'media' as const,
-      title: 'Media',
-      subtitle: 'Platform visuals I made for podcast and content branding.',
-      display: 'MEDIA'
+      title: t.categoryLabel.media,
+      subtitle: localizedCategoryMeta.media.desc,
+      display: t.categoryLabel.media
     },
     {
       key: 'satire' as const,
-      title: 'Satire',
-      subtitle: 'Pieces where I use irony and commentary to make a point.',
-      display: 'SATIRE'
+      title: t.categoryLabel.satire,
+      subtitle: localizedCategoryMeta.satire.desc,
+      display: t.categoryLabel.satire
     }
   ]
 
@@ -151,10 +152,10 @@ export default function Posters(): React.ReactElement {
         </div>
 
         <div className="reveal-item mb-10">
-          <p className="section-kicker">DESIGN WORK</p>
-          <h2>Posters</h2>
+          <p className="section-kicker">{t.postersKicker}</p>
+          <h2>{t.postersTitle}</h2>
           <p className="max-w-2xl mt-3">
-            This is my poster archive. Click any piece to open it in gallery mode.
+            {t.postersDesc}
           </p>
           <div className="poster-filter-bar mt-6">
             <button
@@ -162,10 +163,10 @@ export default function Posters(): React.ReactElement {
               className={`poster-filter-btn ${activeCategory === 'all' ? 'is-active' : ''}`}
               onClick={() => setActiveCategory('all')}
             >
-              All
+              {t.postersAll}
             </button>
             {categoryOrder.map((category) => {
-              const label = category.charAt(0).toUpperCase() + category.slice(1)
+              const label = t.categoryLabel[category]
               return (
                 <button
                   key={category}
@@ -192,7 +193,7 @@ export default function Posters(): React.ReactElement {
                   <h3 className="text-2xl text-gray-900">{group.title}</h3>
                   <p className="text-sm mt-1">{group.subtitle}</p>
                 </div>
-                <p className="poster-lane-hint">Scroll sideways</p>
+                <p className="poster-lane-hint">{t.postersScrollHint}</p>
               </div>
 
               <div className="poster-track">
@@ -256,7 +257,7 @@ export default function Posters(): React.ReactElement {
             type="button"
             className="poster-lightbox-close"
             onClick={() => setActivePosterId(null)}
-            aria-label="Close viewer"
+            aria-label={t.closeViewer}
           >
             ×
           </button>
@@ -265,7 +266,7 @@ export default function Posters(): React.ReactElement {
             type="button"
             className="poster-lightbox-nav poster-lightbox-prev"
             onClick={showPrev}
-            aria-label="Previous poster"
+            aria-label={t.previousPoster}
           >
             ‹
           </button>
@@ -279,10 +280,10 @@ export default function Posters(): React.ReactElement {
           </div>
 
           <aside className="poster-lightbox-meta">
-            <p className="section-kicker mb-2">{activePoster.category.toUpperCase()}</p>
+            <p className="section-kicker mb-2">{t.categoryLabel[activePoster.category]}</p>
             <h3 className="text-2xl text-gray-900 mb-3">{activePoster.title}</h3>
             <p className="text-sm mb-4">{activePoster.description}</p>
-            <p className="text-sm mb-4">{categoryMeta[activePoster.category].desc}</p>
+            <p className="text-sm mb-4">{localizedCategoryMeta[activePoster.category].desc}</p>
             <div className="flex flex-wrap gap-2">
               {activePoster.tags.map((tag) => (
                 <span key={tag} className="poster-chip">
@@ -296,7 +297,7 @@ export default function Posters(): React.ReactElement {
             type="button"
             className="poster-lightbox-nav poster-lightbox-next"
             onClick={showNext}
-            aria-label="Next poster"
+            aria-label={t.nextPoster}
           >
             ›
           </button>
@@ -305,7 +306,7 @@ export default function Posters(): React.ReactElement {
             type="button"
             className="poster-lightbox-backdrop"
             onClick={() => setActivePosterId(null)}
-            aria-label="Close backdrop"
+            aria-label={t.closeBackdrop}
           />
         </div>
       )}

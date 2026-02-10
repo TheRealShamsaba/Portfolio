@@ -1,21 +1,23 @@
 import React from 'react'
-import { portfolioContent } from '../content'
+import { useI18n } from '../i18n'
 
 export default function HomePostersPreview(): React.ReactElement {
-  const featured = portfolioContent.posters.slice(0, 6)
+  const { content, t, locale } = useI18n()
+  const featured = content.posters.slice(0, 6)
+  const langQuery = locale === 'fa' ? '?lang=fa' : ''
 
   return (
     <section id="posters-preview" className="deck-section reveal home-section">
       <div className="section-shell">
         <div className="reveal-item mb-8 home-preview-head">
           <div>
-            <p className="section-kicker">POSTER PREVIEW</p>
-            <h2>A few selected pieces</h2>
+            <p className="section-kicker">{t.posterPreviewKicker}</p>
+            <h2>{t.posterPreviewTitle}</h2>
             <p className="mt-3 max-w-2xl">
-              A quick sample from my full poster archive. For the full categorized showcase, open the posters page.
+              {t.posterPreviewDesc}
             </p>
           </div>
-          <a href="/showcase" className="btn btn-primary text-sm">See All Posters</a>
+          <a href={`/showcase${langQuery}`} className="btn btn-primary text-sm">{t.seeAllPosters}</a>
         </div>
 
         <div className="home-posters-grid">
@@ -29,7 +31,7 @@ export default function HomePostersPreview(): React.ReactElement {
                 decoding="async"
               />
               <div className="home-poster-copy">
-                <p className="text-xs uppercase tracking-[0.14em] text-gray-500">{poster.category}</p>
+                <p className="text-xs uppercase tracking-[0.14em] text-gray-500">{t.categoryLabel[poster.category]}</p>
                 <h3 className="text-lg mt-1">{poster.title}</h3>
               </div>
             </article>

@@ -1,15 +1,16 @@
 import React from 'react'
-import { portfolioContent } from '../content'
+import { useI18n } from '../i18n'
 
 export default function Projects(): React.ReactElement {
-  const projects = portfolioContent.projects
+  const { content, t } = useI18n()
+  const projects = content.projects
 
   return (
     <section id="projects" className="deck-section reveal home-section">
       <div className="section-shell">
         <div className="reveal-item mb-10">
-          <p className="section-kicker">PROGRAMMING WORK</p>
-          <h2>Projects</h2>
+          <p className="section-kicker">{t.projectsKicker}</p>
+          <h2>{t.projectsTitle}</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -25,7 +26,7 @@ export default function Projects(): React.ReactElement {
                 ))}
               </div>
               <a href={p.link} className="btn btn-primary text-sm inline-block">
-                View Project
+                {t.viewProject}
               </a>
             </article>
           ))}

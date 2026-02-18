@@ -6,16 +6,9 @@ export default function HomePostersPreview(): React.ReactElement {
   const featured = React.useMemo(
     () => {
       const byId = new Map(content.posters.map((poster) => [poster.id, poster]))
-      const selected = (content.homePosterIds ?? [])
+      return (content.homePosterIds ?? [])
         .map((id) => byId.get(id))
         .filter((poster): poster is NonNullable<typeof poster> => Boolean(poster))
-
-      if (selected.length) return selected
-
-      return [...content.posters]
-        .filter((poster) => poster.category === 'identity' || poster.category === 'concept')
-        .reverse()
-        .slice(0, 6)
     },
     [content.homePosterIds, content.posters]
   )

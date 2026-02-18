@@ -4,7 +4,10 @@ import { useI18n } from '../i18n'
 export default function HomePostersPreview(): React.ReactElement {
   const { content, t, locale } = useI18n()
   const featured = React.useMemo(
-    () => [...content.posters].reverse().slice(0, 6),
+    () => [...content.posters]
+      .filter((poster) => poster.category === 'identity' || poster.category === 'concept')
+      .reverse()
+      .slice(0, 6),
     [content.posters]
   )
   const langQuery = locale === 'fa' ? '?lang=fa' : ''

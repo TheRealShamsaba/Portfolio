@@ -194,6 +194,15 @@ export const portfolioContent = {
       description: 'This piece is about regret and late realization in personal growth. I designed it as a direct reflection on choices and timing.'
     },
     {
+      id: 'identity-rooted-in-adventure',
+      title: 'Rooted in Adventure',
+      image: '/posters/identity-rooted-in-adventure.jpg.png',
+      category: 'identity',
+      tags: ['identity', 'exploration', 'growth', 'direction', 'self expression'],
+      explicit: false,
+      description: 'This piece is about staying grounded while exploring new paths. I designed it as a visual balance between roots and movement.'
+    },
+    {
       id: 'media-reasonable-show-cover-01',
       title: 'Reasonable Show Cover One',
       image: '/posters/media-reasonable-show-cover-01.webp',

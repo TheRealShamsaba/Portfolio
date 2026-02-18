@@ -266,6 +266,14 @@ export const portfolioContent = {
       description: 'I made this around the idea of endless searching without clarity. It comments on uncertainty as a social pattern.'
     }
   ] as Poster[],
+  homePosterIds: [
+    'identity-rooted-in-adventure',
+    'concept-impermanence',
+    'concept-greatness-and-honor',
+    'concept-small-steps-big-mountains',
+    'identity-stay-close',
+    'concept-teamwork'
+  ] as string[],
   projects: [
     {
       id: 1,

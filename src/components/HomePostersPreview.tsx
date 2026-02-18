@@ -4,11 +4,20 @@ import { useI18n } from '../i18n'
 export default function HomePostersPreview(): React.ReactElement {
   const { content, t, locale } = useI18n()
   const featured = React.useMemo(
-    () => [...content.posters]
-      .filter((poster) => poster.category === 'identity' || poster.category === 'concept')
-      .reverse()
-      .slice(0, 6),
-    [content.posters]
+    () => {
+      const byId = new Map(content.posters.map((poster) => [poster.id, poster]))
+      const selected = (content.homePosterIds ?? [])
+        .map((id) => byId.get(id))
+        .filter((poster): poster is NonNullable<typeof poster> => Boolean(poster))
+
+      if (selected.length) return selected
+
+      return [...content.posters]
+        .filter((poster) => poster.category === 'identity' || poster.category === 'concept')
+        .reverse()
+        .slice(0, 6)
+    },
+    [content.homePosterIds, content.posters]
   )
   const langQuery = locale === 'fa' ? '?lang=fa' : ''
 

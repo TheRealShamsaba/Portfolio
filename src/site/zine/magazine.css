@@ -359,3 +359,9 @@
 @media (min-width:480px) and (max-width:860px) {
   .mg-cover-photo { width: 130%; left: -15%; object-position: 50% 72%; }
 }
+
+/* Keep the oversized masthead and cover lines in separate bands on short laptops. */
+@media (min-width:861px) {
+  .mg-art-title { font-size: min(30cqw,max(170px,calc(110svh - 550px))); }
+  .mg-album-copy h1 { font-size: min(clamp(80px,9.3vw,150px),max(80px,calc(40svh - 225px))); }
+}

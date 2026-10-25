@@ -50,12 +50,12 @@ export const categoryMeta = {
 export const portfolioContent = {
   profile: {
     name: 'Arian Shamsabadi',
-    role: 'Computer engineering student in Istanbul building clean web products and visual work.',
+    role: 'Founder / Full-Stack Developer based in Istanbul.',
     avatar: '/profile.webp',
     intro:
       'I build with React, TypeScript, and Vite, and I focus on clean structure, clear UI, and shipped work.',
     about:
-      'I am a computer engineering student based in Istanbul. I build web products, design poster series, and work on engineering projects with a systems mindset. I host The Reasonable Show, where I share unfiltered thinking with comedy and sarcasm. I care about AI, systems thinking, and execution. I want my work to show range, but more importantly, that I ship.',
+      'I am a founder and full-stack developer based in Istanbul, and I study computer engineering. I build web products, design poster series, and work on engineering projects with a systems mindset. I host The Reasonable Show, where I share unfiltered thinking with comedy and sarcasm. I care about AI, systems thinking, and execution. I want my work to show range, but more importantly, that I ship.',
     email: 'arianshamsabadi@gmail.com',
     telegram: 'https://t.me/Therealshamsaba',
     whatsapp: 'https://wa.me/message/Z6P4QVVV2MIOC1',
@@ -321,7 +321,7 @@ export const portfolioContent = {
       id: 1,
       title: 'KnightVision',
       problem: 'I wanted to learn how decision systems improve over time, not just train a one-off model.',
-      built: 'I built a reinforcement-learning chess engine with self-play, training scripts, and repeatable experiments.',
+      built: 'BakerDmo and I built a reinforcement-learning chess engine with self-play, training scripts, and repeatable experiments.',
       stack: ['Python', 'Reinforcement Learning', 'Neural Networks', 'Chess Engine'],
       result: 'It gave me hands-on practice with long-loop iteration, tuning, and structured ML project setup.',
       link: 'https://github.com/TheRealShamsaba/KnightVision'

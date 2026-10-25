@@ -75,7 +75,7 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
     const root = rootRef.current
     if (!root || prefersReducedMotion()) return
     const media = gsap.matchMedia()
-    media.add({ phone: '(max-width: 860px)', desktop: '(min-width: 861px)' }, (context) => {
+    media.add({ phone: '(max-width: 860px)', desktop: '(min-width: 861px)', short: '(max-height: 639px)' }, (context) => {
       const phone = Boolean(context.conditions?.phone)
       const ctx = gsap.context(() => {
       gsap.timeline({ defaults: { ease: 'power3.out' } })
@@ -83,7 +83,19 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
         .from('.mg-cover-photo', { scale: 1.08, duration: 1.8 }, 0)
         .from('.mg-art-title', { xPercent: -18, opacity: 0, duration: 1.2, ease: 'expo.out' }, .15)
         .from('.mg-album-copy > *', { y: 18, opacity: 0, duration: .8, stagger: .07 }, .2)
-      gsap.to('.mg-cover-photo', { yPercent: 5, ease: 'none', scrollTrigger: { trigger: '.mg-cover', start: 'top top', end: 'bottom top', scrub: true } })
+      if (!context.conditions?.short) {
+        const sleeveSize = (): number => phone ? Math.min(window.innerWidth - 80, window.innerHeight * .38) : Math.min(window.innerWidth * .42, window.innerHeight * .66)
+        const sleeve = gsap.timeline({ scrollTrigger: { trigger: '.mg-cover', start: 'top top', end: () => `+=${window.innerHeight * (phone ? 1.35 : 1.7)}`, pin: true, scrub: .5, invalidateOnRefresh: true, refreshPriority: 10 } })
+        sleeve
+          .to('.mg-album-copy', { opacity: 0, y: -30, duration: .4 }, 0)
+          .fromTo('.mg-album-art', { width: () => window.innerWidth, height: () => root.querySelector<HTMLElement>('.mg-cover')!.offsetHeight, left: 0, top: 0, borderRadius: 0 }, { width: sleeveSize, height: sleeveSize, left: () => phone ? 20 : window.innerWidth * .09, top: () => phone ? 110 : (window.innerHeight - sleeveSize()) / 2 + 20, borderRadius: 6, duration: 1.15, ease: 'power2.inOut' }, .05)
+          .fromTo('.mg-cover-photo', { width: () => window.innerWidth * (phone ? 2.2 : 1), height: () => root.querySelector<HTMLElement>('.mg-cover')!.offsetHeight, left: () => phone ? -window.innerWidth * .6 : 0, top: 0, objectPosition: phone ? '50% 85%' : '50% 38%' }, { width: sleeveSize, height: () => sleeveSize() * 1.08, left: 0, top: 0, objectPosition: '50% 68%', duration: 1.15, ease: 'power2.inOut' }, .05)
+          .fromTo('.mg-art-title', { top: () => phone ? 110 : Math.max(100,window.innerHeight * .11) }, { top: () => sleeveSize() * .04, duration: .8 }, .05)
+          .to('.mg-art-credit, .mg-art-catalogue', { opacity: 1, duration: .3 }, .85)
+          .fromTo('.mg-cover-end', { opacity: 0, y: 36 }, { opacity: 1, y: 0, duration: .5 }, .85)
+          .to({}, { duration: .3 })
+      }
+      gsap.to('.mg-ad-repeat', { yPercent: -12, ease: 'none', scrollTrigger: { trigger: '.mg-ad', start: 'top bottom', end: 'bottom top', scrub: .5 } })
       gsap.to('.mg-session-track', { xPercent: -16, ease: 'none', scrollTrigger: { trigger: '.mg-session-strip', start: 'top bottom', end: 'bottom top', scrub: .5 } })
 
       gsap.from('.mg-toc li', { x: phone ? 0 : -60, opacity: 0, duration: 0.8, ease: 'expo.out', stagger: 0.07, scrollTrigger: { trigger: '.mg-toc', start: 'top 70%' } })
@@ -133,12 +145,11 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
           <p className="mg-artist">Arian Shamsabadi</p>
           <p className="mg-album-deck">Design. Code. Culture.<br />A body of work, with a few B‑sides.</p>
           <p className="mg-album-meta">Istanbul · 2026 · 5 chapters</p>
-          <div className="mg-album-actions">
-            <button type="button" className="mg-start" onClick={() => readChapter('mg-story')}>Explore the album <span aria-hidden="true">↓</span></button>
-            <button type="button" className="mg-track-button" onClick={() => readChapter('mg-toc')}>Track list</button>
-          </div>
+
           <p className="mg-album-note">Written, designed & built by Arian.<br />Client releases. Personal experiments. Still recording.</p>
         </div>
+        <div className="mg-cover-end" aria-hidden="true"><p>AN INDEPENDENT RELEASE / 2026</p><h2>SIDE A.<br />THE WORK.</h2><span>Keep scrolling. Drop into the first track. ↓</span></div>
+        <button type="button" className="mg-cover-cta" onClick={() => readChapter('mg-toc')}>Drop into Side A <span aria-hidden="true">↓</span></button>
       </section>
 
       <section className="mg-toc-wrap" id="mg-toc">
@@ -200,8 +211,7 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
               <p className="mg-kicker">{site.kicker} · {site.place.split(' · ')[0]}</p>
               <h3>{site.title}</h3>
               <p className="mg-feature-line">{site.line}</p>
-              <p>{site.story}</p>
-              <p className="mg-feature-facts">{site.facts}</p>
+              <details className="mg-liner-details"><summary>Liner notes <span aria-hidden="true">+</span></summary><p>{site.story}</p><p className="mg-feature-facts">{site.facts}</p></details>
               <a className="mg-more" href={site.url} target="_blank" rel="noreferrer">{site.host} ↗</a>
             </div>
             {i === 1 && <blockquote className="mg-feature-pull"><span>THE BRIEF, IN ONE LINE</span>“Every deal ends<br />in a conversation.”</blockquote>}
@@ -231,7 +241,7 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
 
       <section className="mg-reviews" id="mg-reviews">
         <header>
-          <p className="mg-section">The B-sides.</p>
+          <div><p className="mg-side-label">SIDE B / 04</p><h2 className="mg-section">The B-sides.</h2></div>
           <p className="mg-reviews-note">Research at the keyboard. Conversations away from it.</p>
         </header>
         {reviews.map((review, i) => (
@@ -241,7 +251,7 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
               <p className="mg-kicker">{review.kind}</p>
               <h3>{review.title}</h3>
             </div>
-            <p>{review.text}</p>
+            <details className="mg-liner-details"><summary>Behind this track <span aria-hidden="true">+</span></summary><p>{review.text}</p></details>
             <a className="mg-more" href={review.url} target="_blank" rel="noreferrer">{review.cta} ↗</a>
           </article>
         ))}

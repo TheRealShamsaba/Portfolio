@@ -19,7 +19,7 @@
 .mg-more { display: inline-block; max-width: 100%; padding-block: 8px; font: 600 13px/1.5 var(--f-body); border-bottom: 1px solid currentColor; overflow-wrap: anywhere; transition: color .2s; }
 .mg-more:hover { color: #a32e23; }
 
-/* The artwork stays a square. The information lives beside it, like an album page. */
+/* Shared typography for the original cover artwork and its sleeve. */
 .mg-cover { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1fr); gap: 30px clamp(40px, 7vw, 110px); align-items: center; padding: 110px max(var(--gutter), calc((100vw - 1280px)/2)) 70px; background: #29221f; color: #f5f0e8; }
 .mg-cover-topline { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 20px; padding-bottom: 16px; border-bottom: 1px solid #ffffff29; font: 500 10px/1.5 var(--f-mono); letter-spacing: .14em; }
 .mg-cover-topline > span:first-child { color: #edb7a0; }
@@ -242,4 +242,103 @@
   .mg-reading-prev { display: none; }
   .mg-reading .mg-reading-index { font-size: 11px; }
   .mg-reading button { min-width: 34px; }
+}
+
+/* The LP opens around you, then pulls back into its sleeve as you scroll. */
+.mg-cover { display: block; position: relative; isolation: isolate; height: max(100svh,720px); padding: 0; overflow: hidden; background: #131212; }
+.mg-album-art { position: absolute; inset: 0 auto auto 0; width: 100%; height: 100%; aspect-ratio: auto; border-radius: 0; box-shadow: none; }
+.mg-cover-photo { width: 100%; max-width: none; height: 100%; object-position: 50% 38%; filter: saturate(.55) brightness(.8) contrast(1.1); }
+.mg-album-art::after { inset: 30% 0 0; background: linear-gradient(transparent,#0e0b09bb); }
+.mg-art-title { top: max(100px,11svh); color: #ee4936; }
+.mg-art-credit, .mg-art-catalogue { opacity: 0; }
+.mg-cover-topline { position: absolute; top: 86px; left: var(--gutter); right: var(--gutter); z-index: 5; padding-bottom: 0; border: 0; }
+.mg-album-copy { position: absolute; left: var(--gutter); bottom: 96px; z-index: 3; width: min(49%,760px); }
+.mg-album-copy h1 { margin-top: 16px; font-size: clamp(80px,9.3vw,150px); line-height: .92; }
+.mg-artist { margin-top: 18px; color: #f5f0e8; font-size: 20px; }
+.mg-album-deck, .mg-album-meta, .mg-album-note { display: none; }
+.mg-cover-cta { position: absolute; right: var(--gutter); bottom: 26px; z-index: 5; display: inline-flex; align-items: center; gap: 32px; min-height: 48px; padding: 10px 18px; border: 1px solid #ffffff50; border-radius: 6px; background: #14121299; color: #fff2e7; backdrop-filter: blur(12px); font: 500 13px/1.4 var(--f-body); }
+.mg-cover-cta:hover { background: #e64634; border-color: #e64634; }
+.mg-cover-end { position: absolute; left: 54%; top: 36%; width: 42%; z-index: 3; opacity: 0; }
+.mg-cover-end p { color: #eda78f; font: 10px/1.5 var(--f-mono); letter-spacing: .13em; }
+.mg-cover-end h2 { margin-top: 24px; font: 650 clamp(72px,7.8vw,124px)/.94 var(--f-body); letter-spacing: -.065em; }
+.mg-cover-end > span { display: block; margin-top: 30px; color: #c9beb6; font: 14px/1.4 var(--f-body); }
+.mg-toc-wrap { background: #131212; padding-block: 80px 100px; }
+.mg-session-strip { padding-block: 32px 38px; }
+
+/* Documentary monochrome. The record's personal side. */
+.mg-story { background: #131212; color: #f0ece4; }
+.mg-story-head .mg-headline { font: 650 clamp(48px,17cqw,138px)/.98 var(--f-body); letter-spacing: -.06em; }
+.mg-story-head .mg-section, .mg-qa-no { color: #ee8b76; }
+.mg-byline, .mg-story-photo figcaption, .mg-vitals dt { color: #bcb4aa; }
+.mg-story-body, .mg-vitals { border-color: #ffffff40; }
+.mg-qa { border-color: #ffffff26; }
+.mg-story-photo img { filter: grayscale(1) contrast(1.18); }
+
+/* Each release changes the entire room, like the next track dropping in. */
+.mg-next { padding-bottom: 0; }
+.mg-feature { min-height: 100svh; margin-inline: calc(-1 * var(--gutter)); padding: 55px var(--gutter) 80px; border-top: 0; }
+.mg-feature-no { padding-bottom: 20px; border-bottom: 1px solid currentColor; }
+.mg-feature-copy h3 { font-size: clamp(58px,6.4vw,104px); }
+.mg-feature-dgm { background: #d9dfcf; }
+.mg-feature-delux { background: #171613; color: #eee5cf; }
+.mg-feature-delux .mg-kicker, .mg-feature-delux .mg-feature-pull > span { color: #ddc07b; }
+.mg-feature-delux .mg-feature-no, .mg-feature-delux .mg-feature-facts { color: #c6bdab; }
+.mg-feature-delux .mg-feature-pull { border-color: #ffffff2c; color: #ddc07b; }
+.mg-feature-realco { background: #3d56cb; color: #f5f0e8; }
+.mg-feature-realco .mg-kicker, .mg-feature-realco .mg-feature-no, .mg-feature-realco .mg-feature-facts { color: #e0e3ff; }
+.mg-feature-realco .mg-more:hover { color: #fff; }
+.mg-liner-details { max-width: 56ch; margin-top: 24px; }
+.mg-liner-details summary { display: flex; align-items: center; justify-content: space-between; gap: 24px; width: min(100%,340px); min-height: 48px; padding: 12px 8px 12px 0; border-block: 1px solid currentColor; font: 500 12px/1.5 var(--f-mono); cursor: pointer; list-style: none; scroll-margin-block: 100px; }
+.mg-liner-details summary::-webkit-details-marker { display: none; }
+.mg-liner-details summary > span { font: 400 22px/1 var(--f-body); transition: transform .25s; }
+.mg-liner-details[open] summary > span { transform: rotate(45deg); }
+.mg-liner-details > p { margin-top: 18px; font: 400 16px/1.65 var(--f-body); }
+.mg-liner-details > .mg-feature-facts { font: 10px/1.7 var(--f-mono); }
+.mg-feature-dgm .mg-liner-details { grid-column: 1/-1; grid-row: 3; max-width: 80ch; }
+.mg-feature-dgm .mg-more { grid-row: 4; }
+.mg-feature-dgm .mg-liner-details .mg-feature-facts { grid-column: auto; grid-row: auto; }
+
+/* A full-bleed orange sleeve. */
+.mg-ad { padding: 0; }
+.mg-ad-sheet { min-height: 100svh; align-content: center; padding: clamp(40px,6vw,90px); }
+.mg-ad-hook { font-size: clamp(58px,21cqw,160px); }
+.mg-ad-phones { max-height: 78svh; }
+
+/* Side B feels like the lights coming down after the main set. */
+.mg-reviews { padding-block: 100px; background: #131212; color: #f0ece4; }
+.mg-reviews > header { border-color: #ffffff40; }
+.mg-reviews-note { color: #bcb4aa; }
+.mg-side-label { margin-bottom: 20px; color: #ee8b76; font: 10px/1.5 var(--f-mono); letter-spacing: .13em; }
+.mg-reviews .mg-kicker { color: #ee8b76; }
+.mg-review .mg-liner-details { margin-top: 0; }
+.mg-reviews .mg-more:hover { color: #ee8b76; }
+.mg-shouts { background: #a53329; }
+.mg-shouts .mg-section, .mg-card-overline, .mg-card-small { color: #f8d0be; }
+.mg-links a, .mg-links button, .mg-card-mail { border-color: #f8d0be; }
+.mg-card { background: #24090622; border-color: #f8d0be50; }
+.mg-card li i { border-color: #f8d0be; }
+
+@media (max-width: 860px) {
+  .mg-cover { height: max(100svh,640px); }
+  .mg-cover-topline { top: 82px; }
+  .mg-cover-photo { width: 220%; left: -60%; object-position: 50% 85%; }
+  .mg-art-title { top: 110px; }
+  .mg-album-copy { left: 20px; right: 20px; bottom: 110px; width: auto; }
+  .mg-album-copy h1 { font-size: clamp(60px,14vw,94px); line-height: .94; }
+  .mg-album-copy .mg-kicker { font-size: 9px; }
+  .mg-artist { font-size: 17px; margin-top: 14px; }
+  .mg-cover-end { left: 20px; right: 20px; top: calc(144px + min(calc(100vw - 80px),38svh)); width: auto; }
+  .mg-cover-end p { font-size: 8px; }
+  .mg-cover-end h2 { margin-top: 16px; font-size: clamp(48px,14vw,74px); line-height: .95; }
+  .mg-cover-end > span { margin-top: 22px; font-size: 12px; }
+  .mg-cover-cta { right: 20px; bottom: 24px; min-height: 44px; gap: 24px; font-size: 12px; }
+  .mg-toc-wrap { padding-block: 44px 65px; }
+  .mg-feature { min-height: 0; padding: 30px var(--gutter) 65px; }
+  .mg-feature-copy h3 { font-size: clamp(46px,13vw,76px); }
+  .mg-feature-dgm .mg-liner-details { margin-top: 22px; }
+  .mg-feature .mg-more { margin-top: 18px; }
+  .mg-ad-sheet { min-height: 0; padding: 36px var(--gutter) 44px; }
+  .mg-ad-phones { max-height: none; }
+  .mg-ad-hook { font-size: clamp(58px,20cqw,100px); }
+  .mg-reviews { padding-block: 70px; }
 }

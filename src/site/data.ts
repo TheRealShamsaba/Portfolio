@@ -101,7 +101,7 @@ export const knightvision: Chapter = {
   id: 'knightvision',
   title: 'KnightVision',
   place: 'Research · Applied AI',
-  story: 'KnightVision is a chess engine I built to learn the way people do: by playing. It starts with nothing but the rules, plays against itself game after game, and keeps what works. Under the hood, a policy network proposes moves, a value network judges positions, and Stockfish acts as the referee. It is where I learned how much engineering sits behind the word AI.',
+  story: 'BakerDmo and I built KnightVision, a chess engine that learns by playing. It starts with nothing but the rules, plays against itself game after game, and keeps what works. Under the hood, a policy network proposes moves, a value network judges positions, and Stockfish acts as the referee. It is where I learned how much engineering sits behind the word AI.',
   facts: 'Python · PyTorch · Self-play reinforcement learning · Stockfish evaluation',
   url: 'https://github.com/TheRealShamsaba/KnightVision',
   host: 'github.com/TheRealShamsaba/KnightVision',

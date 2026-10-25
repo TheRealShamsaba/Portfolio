@@ -36,3 +36,9 @@ Custom domain: `arian.realcompanys.com`. The first published source snapshot is 
 The main project scenes use pinned animation above 900px. Phones keep normal vertical scrolling with a full-screen portrait cover, larger project previews that pan as you scroll, and complete project stories. Drip is a finite vertical scroll film on phones: the stage holds while its four screens advance, then releases into KnightVision. Reduced motion shows every chapter as a static sequence. The poster archive uses full-colour, swipeable artwork with scroll snapping. The alternate views adapt at 860px. Posters brings print layers into register and pans site artwork with scrolling. Hip-hop has colour reveals and a mobile section index. The sketchbook shows one page at a time on phones and a spread on larger screens, with a mobile chapter picker and an explicit touch drawing mode; reduced motion shows a readable sequence of static pages.
 
 Before publishing, check the introduction, project links, Drip, contact actions and all three alternate views at both phone and desktop widths. Animation-heavy changes should also be checked after a fresh page load.
+
+## Author and related work
+
+Created by [Arian Shamsabadi](https://github.com/TheRealShamsaba), Founder / Full-Stack Developer.
+
+[LinkedIn](https://www.linkedin.com/in/arian-shamsabadi-00508a281/) · [KnightVision](https://github.com/TheRealShamsaba/KnightVision) (with BakerDmo) · [Real Company](https://realcompanys.com/)

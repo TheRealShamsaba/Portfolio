@@ -93,7 +93,7 @@ export const categoryMeta = {
 export const portfolioContent = {
   profile: {
     name: 'Arian Shamsabadi',
-    role: 'Founder & product builder working across AI, software, brand, and media.',
+    role: 'Founder / Full-Stack Developer based in Istanbul.',
     avatar: '/profile.webp',
     intro:
       'Strategy is only useful when it becomes a product people can touch.',
@@ -449,7 +449,7 @@ export const portfolioContent = {
       id: 1,
       title: 'KnightVision',
       problem: 'I wanted to learn how decision systems improve over time, not just train a one-off model.',
-      built: 'I built a reinforcement-learning chess engine with self-play, training scripts, and repeatable experiments.',
+      built: 'BakerDmo and I built a reinforcement-learning chess engine with self-play, training scripts, and repeatable experiments.',
       stack: ['Python', 'Reinforcement Learning', 'Neural Networks', 'Chess Engine'],
       result: 'It gave me hands-on practice with long-loop iteration, tuning, and structured ML project setup.',
       link: 'https://github.com/TheRealShamsaba/KnightVision'

@@ -23,7 +23,7 @@
 .sk-plane .dashed { stroke-dasharray: 2 12; }
 
 /* Stage: pinned while the pages turn */
-.sk-stage { position: relative; height: 100svh; overflow: hidden; }
+.sk-stage { position: relative; height: 100vh; height: 100svh; overflow: hidden; }
 .sk-scroll-track { display: contents; }
 .sk-scroll-track.is-native-book { display: block; height: calc(100svh * var(--book-length)); }
 .is-native-book .sk-stage { position: sticky; top: 0; }
@@ -113,6 +113,7 @@
 .sk-cover-label { font: 700 13px var(--f-mono); letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.6; }
 .sk-cover-name { margin-top: 10px; font: 700 76px/0.92 var(--hand); }
 .sk-cover-vol { margin-top: 12px; font: italic 400 22px var(--f-serif); opacity: 0.7; }
+.sk-open { display: none; }
 .sk-sticker { position: absolute; padding: 12px 20px; border-radius: 50%; font: 700 28px var(--hand); color: #1c1c1c; }
 .sk-sticker.is-a { top: 70px; left: 60px; background: #ffd400; transform: rotate(-12deg); }
 .sk-sticker.is-b { top: 150px; right: 90px; background: #8d95f3; transform: rotate(9deg); font-family: 'Aref Ruqaa', serif; }
@@ -220,6 +221,11 @@
   .sk-postit.is-hint { display: none; }
 }
 @media (max-width: 860px) {
+  .sketchbook { overflow: visible; }
+  .sk-face.is-openable .sk-cover-front { padding-bottom: calc(76px / var(--scale,1)); }
+  .sk-open { position: absolute; inset: 0; z-index: 7; display: flex; align-items: flex-end; padding: 24px 50px 24px 64px; text-align: left; color: #f1ece0; font: 700 calc(16px / var(--scale,1))/1.3 var(--hand); }
+  .sk-open span { padding-bottom: 4px; border-bottom: 2px solid #8d95f3; }
+  .sk-open:focus-visible { outline-offset: -8px; outline-color: #8d95f3; }
   .sk-controls { bottom: 16px; gap: 16px; font-size: 22px; }
   .sk-controls span { min-width: 90px; }
 }

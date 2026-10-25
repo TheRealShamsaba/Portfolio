@@ -23,7 +23,7 @@ export function resetScroll(): void {
   ScrollTrigger.refresh()
   lenis?.resize()
   lenis?.scrollTo(0, { immediate: true, force: true })
-  window.scrollTo({ top: 0, behavior: 'instant' })
+  window.scrollTo(0, 0)
   ScrollTrigger.update()
 }
 

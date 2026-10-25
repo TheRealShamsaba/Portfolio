@@ -137,16 +137,18 @@ const PHONE = '(max-width: 860px)'
 
 type Page = { kind: 'cover' | 'paper'; node: React.ReactNode; date?: string }
 const InkMode = React.createContext(false)
-const chapters: [number, string][] = [[0, 'The cover'], [2, 'Hello, I’m Arian'], [3, 'Darman Gostar Miad'], [5, 'Delux Grup'], [7, 'Real Co.'], [9, 'Drip'], [11, 'KnightVision'], [12, 'The Reasonable Show'], [13, 'Write to me'], [15, 'The end']]
+const chapters: [number, string][] = [[0, 'The cover'], [1, 'Inside the cover'], [2, 'Hello, I’m Arian'], [3, 'Darman Gostar Miad'], [5, 'Delux Grup'], [7, 'Real Co.'], [9, 'Drip'], [11, 'KnightVision'], [12, 'The Reasonable Show'], [13, 'Write to me'], [15, 'The end']]
 
 // Ink you add yourself: hold the mouse down on a page and draw. The ink lives on
 // that page, so it turns with it.
 function useInk(face: React.RefObject<HTMLDivElement | null>, canvas: React.RefObject<HTMLCanvasElement | null>, enabled: boolean): void {
   React.useEffect(() => {
     const root = face.current
-    const ctx = canvas.current?.getContext('2d')
-    if (!root || !ctx) return
-    ctx.setTransform(2, 0, 0, 2, 0, 0)
+    const ink = canvas.current
+    if (!root || !ink) return
+    // Hidden pages need no drawing buffers. Allocate one only when the visitor
+    // actually puts a pen down, rather than opening every canvas on an iPhone.
+    let ctx: CanvasRenderingContext2D | null = null
     let drawing = false
     let pointer = -1
     let last = { x: 0, y: 0 }
@@ -158,6 +160,9 @@ function useInk(face: React.RefObject<HTMLDivElement | null>, canvas: React.RefO
     const down = (event: PointerEvent): void => {
       if (event.button !== 0 || (event.pointerType !== 'mouse' && !enabled)) return
       if ((event.target as Element).closest('a, button')) return
+      ctx = ink.getContext('2d')
+      if (!ctx) return
+      ctx.setTransform(2, 0, 0, 2, 0, 0)
       drawing = true
       pointer = event.pointerId
       root.setPointerCapture(pointer)
@@ -165,7 +170,7 @@ function useInk(face: React.RefObject<HTMLDivElement | null>, canvas: React.RefO
       event.preventDefault()
     }
     const move = (event: PointerEvent): void => {
-      if (!drawing || event.pointerId !== pointer) return
+      if (!drawing || !ctx || event.pointerId !== pointer) return
       event.preventDefault()
       const next = point(event)
       const speed = Math.hypot(next.x - last.x, next.y - last.y)
@@ -199,15 +204,16 @@ function useInk(face: React.RefObject<HTMLDivElement | null>, canvas: React.RefO
   }, [face, canvas, enabled])
 }
 
-function Face({ page, side, folio }: { page: Page; side: 'front' | 'back'; folio: number }): React.ReactElement {
+function Face({ page, side, folio, onOpen }: { page: Page; side: 'front' | 'back'; folio: number; onOpen?: () => void }): React.ReactElement {
   const faceRef = React.useRef<HTMLDivElement>(null)
   const inkRef = React.useRef<HTMLCanvasElement>(null)
   useInk(faceRef, inkRef, React.useContext(InkMode))
   const hand = side === 'back' ? 'is-left' : 'is-right'
   return (
-    <div className={`sk-face is-${side} ${page.kind === 'cover' ? 'is-cover' : `sk-paper ${hand}`}`} ref={faceRef}>
+    <div className={`sk-face is-${side} ${page.kind === 'cover' ? 'is-cover' : `sk-paper ${hand}`} ${onOpen ? 'is-openable' : ''}`} ref={faceRef}>
       {page.date ? <span className="sk-date">{page.date}</span> : null}
       {page.node}
+      {onOpen ? <button type="button" className="sk-open" aria-label="Open notebook" onClick={onOpen}><span>Open notebook →</span></button> : null}
       {page.kind === 'paper' && folio > 0 ? <span className="sk-folio">— {folio} —</span> : null}
       {page.kind === 'paper' ? <canvas className="sk-ink" ref={inkRef} width={PAGE_W * 2} height={PAGE_H * 2} aria-hidden="true" /> : null}
       <i className="sk-shade" aria-hidden="true" />
@@ -592,37 +598,68 @@ export default function SketchMood({ onExit }: { onExit: () => void }): React.Re
     const mm = gsap.matchMedia()
     const build = (phone: boolean): (() => void) => {
       fit()
+      // A breakpoint reverts the old GSAP context, including its ink strokes.
+      // Pages already visited should keep their drawings in the new layout.
+      const seenInk = root.querySelectorAll('.sk-face.is-seen .ink:not(.dashed)')
+      if (seenInk.length) gsap.set(seenInk, { strokeDashoffset: 0 })
       const total = phone ? count * 2 - 1 : count
       setSteps(total)
       if (phone) {
         const track = stage.parentElement!
         track.classList.add('is-native-book')
-        track.style.setProperty('--book-length', String(1 + total * .65))
-        render(0, true)
-        // Leave each page flat for most of its scroll interval. Only the last
-        // part turns the leaf, so a casual swipe lands on readable paper.
-        const trigger = ScrollTrigger.create({
-          trigger: track, start: 'top top',
-          end: () => `+=${track.offsetHeight - stage.offsetHeight}`,
-          onUpdate: (self) => {
-            const s = self.progress * total
-            const at = Math.floor(s)
-            const turn = clamp01((s - at - .6) / .4)
-            render(at + turn * turn * (3 - 2 * turn), true)
+        const bookLength = 1 + .45 + (total - 1) * .65
+        track.style.setProperty('--book-length', String(bookLength))
+        let viewportWidth = 0
+        let frame = 0
+        const measure = (): void => {
+          // Keep browser-toolbar resizes from changing the book's scroll track.
+          // Rotation and actual width changes still refit the page.
+          if (Math.abs(window.innerWidth - viewportWidth) > 2) {
+            viewportWidth = window.innerWidth
+            stage.style.removeProperty('height')
+            const height = stage.clientHeight || window.innerHeight
+            stage.style.height = `${height}px`
+            track.style.height = `${height * bookLength}px`
+            fit()
           }
-        })
+        }
+        measure()
+        render(0, true)
+        // Read native page geometry directly on phones. Opening the cover starts
+        // on the first swipe; later pages hold flat long enough to read.
+        const update = (): void => {
+          frame = 0
+          const distance = Math.max(0, -track.getBoundingClientRect().top) / stage.clientHeight
+          const s = Math.min(total, distance < .45 ? distance / .45 : 1 + (distance - .45) / .65)
+          const at = Math.floor(s)
+          const turn = at === 0 ? s : clamp01((s - at - .6) / .4)
+          render(at + turn * turn * (3 - 2 * turn), true)
+        }
+        const schedule = (): void => { if (!frame) frame = requestAnimationFrame(update) }
+        const resize = (): void => { measure(); schedule() }
+        window.addEventListener('scroll', schedule, { passive: true })
+        window.addEventListener('touchmove', schedule, { passive: true })
+        window.addEventListener('resize', resize)
+        window.addEventListener('pageshow', resize)
         goTo.current = (target, immediate = false) => {
           const at = Math.min(total, Math.max(0, target))
-          // Use the current layout even if an orientation-change refresh is
-          // still queued; the chapter picker must land on the requested page.
-          const top = track.getBoundingClientRect().top + window.scrollY + at / total * (track.offsetHeight - stage.offsetHeight)
-          window.scrollTo({ top, behavior: immediate ? 'instant' : 'smooth' })
-          if (immediate) { trigger.update(); render(at, true) }
+          const distance = at <= 1 ? at * .45 : .45 + (at - 1) * .65
+          const top = track.getBoundingClientRect().top + window.scrollY + distance * stage.clientHeight
+          if (immediate) { window.scrollTo(0, top); render(at, true) }
+          else window.scrollTo({ top, behavior: 'smooth' })
+          schedule()
         }
+        schedule()
         return () => {
-          trigger.kill()
+          cancelAnimationFrame(frame)
+          window.removeEventListener('scroll', schedule)
+          window.removeEventListener('touchmove', schedule)
+          window.removeEventListener('resize', resize)
+          window.removeEventListener('pageshow', resize)
           track.classList.remove('is-native-book')
           track.style.removeProperty('--book-length')
+          track.style.removeProperty('height')
+          stage.style.removeProperty('height')
         }
       }
       const state = { s: 0 }
@@ -734,7 +771,7 @@ export default function SketchMood({ onExit }: { onExit: () => void }): React.Re
           <div className="sk-book">
             {leaves.map(([front, back], k) => (
               <div className="sk-leaf" key={k}>
-                <Face page={front} side="front" folio={2 * k - 1} />
+                <Face page={front} side="front" folio={2 * k - 1} onOpen={k === 0 ? () => goTo.current(1) : undefined} />
                 <Face page={back} side="back" folio={2 * k} />
               </div>
             ))}

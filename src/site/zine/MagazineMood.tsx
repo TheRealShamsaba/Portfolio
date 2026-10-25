@@ -78,7 +78,7 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
     const root = rootRef.current
     if (!root || prefersReducedMotion()) return
     const media = gsap.matchMedia()
-    media.add({ phone: '(max-width: 860px)', desktop: '(min-width: 861px)', short: '(max-height: 639px)' }, (context) => {
+    media.add({ phone: '(max-width: 860px)', desktop: '(min-width: 861px)', short: '(min-width: 861px) and (max-height: 639px)', landscape: '(orientation: landscape)' }, (context) => {
       const phone = Boolean(context.conditions?.phone)
       const ctx = gsap.context(() => {
       gsap.timeline({ defaults: { ease: 'power3.out' } })
@@ -86,9 +86,16 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
         .from('.mg-cover-photo', { scale: 1.08, duration: 1.8 }, 0)
         .from('.mg-art-title', { xPercent: -18, opacity: 0, duration: 1.2, ease: 'expo.out' }, .15)
         .from('.mg-album-copy > *', { y: 18, opacity: 0, duration: .8, stagger: .07 }, .2)
-      if (!context.conditions?.short) {
-        const sleeveSize = (): number => phone ? Math.min(window.innerWidth - 80, window.innerHeight * .38) : Math.min(window.innerWidth * .42, window.innerHeight * .66)
-        const sleeve = gsap.timeline({ scrollTrigger: { trigger: '.mg-cover', start: 'top top', end: () => `+=${window.innerHeight * (phone ? 1.35 : 1.7)}`, pin: true, scrub: .5, invalidateOnRefresh: true, refreshPriority: 10 } })
+      if (!context.conditions?.short && (!phone || window.innerHeight >= 640)) {
+        const cover = root.querySelector<HTMLElement>('.mg-cover')!
+        const track = root.querySelector<HTMLElement>('.mg-cover-track')!
+        if (phone) track.classList.add('is-native-cover')
+        const sleeveSize = (): number => phone ? Math.min(window.innerWidth - 80, cover.offsetHeight * .38) : Math.min(window.innerWidth * .42, window.innerHeight * .66)
+        const sleeve = gsap.timeline({ scrollTrigger: {
+          trigger: phone ? track : cover, start: 'top top',
+          end: () => `+=${phone ? track.offsetHeight - cover.offsetHeight : window.innerHeight * 1.7}`,
+          pin: !phone, scrub: phone ? true : .5, invalidateOnRefresh: true, refreshPriority: 10
+        } })
         sleeve
           .to('.mg-album-copy', { opacity: 0, y: -30, duration: .4 }, 0)
           .fromTo('.mg-album-art', { width: () => window.innerWidth, height: () => root.querySelector<HTMLElement>('.mg-cover')!.offsetHeight, left: 0, top: 0, borderRadius: 0 }, { width: sleeveSize, height: sleeveSize, left: () => phone ? 20 : window.innerWidth * .09, top: () => phone ? 110 : (window.innerHeight - sleeveSize()) / 2 + 20, borderRadius: 6, duration: 1.15, ease: 'power2.inOut' }, .05)
@@ -98,27 +105,29 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
           .fromTo('.mg-cover-end', { opacity: 0, y: 36 }, { opacity: 1, y: 0, duration: .5 }, .85)
           .to({}, { duration: .3 })
       }
-      gsap.to('.mg-ad-repeat', { yPercent: -12, ease: 'none', scrollTrigger: { trigger: '.mg-ad', start: 'top bottom', end: 'bottom top', scrub: .5 } })
-      gsap.to('.mg-session-track', { xPercent: -16, ease: 'none', scrollTrigger: { trigger: '.mg-session-strip', start: 'top bottom', end: 'bottom top', scrub: .5 } })
+      gsap.to('.mg-ad-repeat', { yPercent: -12, ease: 'none', scrollTrigger: { trigger: '.mg-ad', start: 'top bottom', end: 'bottom top', scrub: phone ? true : .5 } })
+      gsap.to('.mg-session-track', { xPercent: -16, ease: 'none', scrollTrigger: { trigger: '.mg-session-strip', start: 'top bottom', end: 'bottom top', scrub: phone ? true : .5 } })
 
-      gsap.from('.mg-toc li', { x: phone ? 0 : -60, opacity: 0, duration: 0.8, ease: 'expo.out', stagger: 0.07, scrollTrigger: { trigger: '.mg-toc', start: 'top 70%' } })
+      gsap.from('.mg-toc li', { x: phone ? 0 : -60, opacity: 0, duration: phone ? .4 : .8, ease: 'expo.out', stagger: phone ? .03 : .07, scrollTrigger: { trigger: '.mg-toc', start: phone ? 'top 88%' : 'top 70%' } })
 
 
       gsap.utils.toArray<HTMLElement>('.mg-feature').forEach((feature) => {
         const print = feature.querySelector('.mg-feature-print')
         gsap.from(print, {
-          clipPath: 'inset(0 0 100% 0)', duration: phone ? 1.2 : 0.65,
+          clipPath: 'inset(0 0 100% 0)', duration: 0.65,
           ease: phone ? 'power3.inOut' : 'power2.out',
-          scrollTrigger: { trigger: phone ? feature : print, start: 'top 95%', once: true }
+          scrollTrigger: phone
+            ? { trigger: print, start: 'top 98%', end: 'top 72%', scrub: true }
+            : { trigger: print, start: 'top 95%', once: true }
         })
         if (phone) {
           gsap.fromTo(feature.querySelector('img'), { filter: 'grayscale(1) contrast(1.25)' }, {
             filter: 'grayscale(0) contrast(1)', ease: 'none',
-            scrollTrigger: { trigger: feature.querySelector('.mg-feature-print'), start: 'top 90%', end: 'top 50%', scrub: 0.35 }
+            scrollTrigger: { trigger: feature.querySelector('.mg-feature-print'), start: 'top 90%', end: 'top 50%', scrub: true }
           })
           gsap.fromTo(feature.querySelector('img'), { objectPosition: '50% 0%' }, {
             objectPosition: '50% 35%', ease: 'none',
-            scrollTrigger: { trigger: feature.querySelector('.mg-feature-print'), start: 'top 40%', end: 'bottom top+=100', scrub: 0.35 }
+            scrollTrigger: { trigger: feature.querySelector('.mg-feature-print'), start: 'top 40%', end: 'bottom top+=100', scrub: true }
           })
         }
       })
@@ -127,14 +136,14 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
       if (phone) gsap.from('.mg-story-photo img', { clipPath: 'inset(0 0 100% 0)', duration: 0.9, ease: 'power2.inOut', scrollTrigger: { trigger: '.mg-story-photo', start: 'top 85%', once: true } })
 
       }, root)
-      return () => ctx.revert()
+      return () => { ctx.revert(); root.querySelector('.mg-cover-track')?.classList.remove('is-native-cover') }
     })
     return () => media.revert()
   }, [])
 
   return (
     <div className="magazine" ref={rootRef}>
-      <section className="mg-cover" id="top">
+      <div className="mg-cover-track"><section className="mg-cover" id="top">
         <div className="mg-cover-topline"><span>REAL. RECORDS</span><span>INDEPENDENT WORK · VOL. 026</span></div>
         <div className="mg-album-art">
           <img className="mg-cover-photo" src={profile.portrait} alt="Arian Shamsabadi in Cappadocia" />
@@ -154,7 +163,7 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
         <div className="mg-cover-end" aria-hidden="true"><p>AN INDEPENDENT RELEASE / 2026</p><h2>SIDE A.<br />THE WORK.</h2><span>Keep scrolling. Drop into the first track. ↓</span></div>
         <button type="button" className="mg-cover-beat" aria-pressed={beat.on} disabled={beat.unavailable} onClick={() => void beat.toggle()} title="Original instrumental loop · 88 BPM">{beatLabel}</button>
         <button type="button" className="mg-cover-cta" onClick={() => readChapter('mg-toc')}>Drop into Side A <span aria-hidden="true">↓</span></button>
-      </section>
+      </section></div>
 
       <section className="mg-toc-wrap" id="mg-toc">
         <div className="mg-toc-heading"><p className="mg-section">The track list</p><p>Two cities.<br />One body of work.</p><span>NO SKIPS. JUST SCROLL.</span></div>

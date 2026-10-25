@@ -4,6 +4,9 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
+// A phone's address bar changes the visual viewport during a swipe. Rebuilding
+// the scenes on each small height change interrupts native momentum scrolling.
+ScrollTrigger.config({ ignoreMobileResize: true })
 
 let lenis: Lenis | null = null
 
@@ -26,18 +29,28 @@ export function resetScroll(): void {
 
 export function useSmoothScroll(): void {
   React.useEffect(() => {
-    if (prefersReducedMotion()) return
-    const instance = new Lenis({ lerp: 0.085 })
-    lenis = instance
-    instance.on('scroll', ScrollTrigger.update)
-    const tick = (time: number): void => instance.raf(time * 1000)
-    gsap.ticker.add(tick)
-    gsap.ticker.lagSmoothing(0)
-    return () => {
-      gsap.ticker.remove(tick)
-      instance.destroy()
-      lenis = null
+    const desktop = window.matchMedia('(min-width: 900px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)')
+    let dispose = (): void => undefined
+    const update = (): void => {
+      dispose()
+      dispose = () => undefined
+      if (!desktop.matches) return
+      const instance = new Lenis({ lerp: 0.085 })
+      lenis = instance
+      if (document.documentElement.classList.contains('is-loading')) instance.stop()
+      instance.on('scroll', ScrollTrigger.update)
+      const tick = (time: number): void => instance.raf(time * 1000)
+      gsap.ticker.add(tick)
+      gsap.ticker.lagSmoothing(0)
+      dispose = () => {
+        gsap.ticker.remove(tick)
+        instance.destroy()
+        if (lenis === instance) lenis = null
+      }
     }
+    update()
+    desktop.addEventListener('change', update)
+    return () => { desktop.removeEventListener('change', update); dispose() }
   }, [])
 }
 

@@ -246,6 +246,9 @@
 
 /* The LP opens around you, then pulls back into its sleeve as you scroll. */
 .mg-cover { display: block; position: relative; isolation: isolate; height: max(100svh,720px); padding: 0; overflow: hidden; background: #131212; }
+.mg-cover-track { display: contents; }
+.mg-cover-track.is-native-cover { display: block; height: max(185svh,1184px); }
+.is-native-cover .mg-cover { position: sticky; top: 0; }
 .mg-album-art { position: absolute; inset: 0 auto auto 0; width: 100%; height: 100%; aspect-ratio: auto; border-radius: 0; box-shadow: none; }
 .mg-cover-photo { width: 100%; max-width: none; height: 100%; object-position: 50% 38%; filter: saturate(.55) brightness(.8) contrast(1.1); }
 .mg-album-art::after { inset: 30% 0 0; background: linear-gradient(transparent,#0e0b09bb); }

@@ -436,6 +436,9 @@ ol, ul { margin: 0; padding: 0; list-style: none; }
   --phone: min(300px, 21vw, calc((100svh - 220px) / 2.13));
   --df-serif: 'Fraunces', var(--f-serif);
   position: relative;
+}
+.df-stage {
+  position: relative;
   height: 100svh;
   overflow: hidden;
 }
@@ -493,6 +496,7 @@ ol, ul { margin: 0; padding: 0; list-style: none; }
 
 /* Phones and reduced motion: the film as a simple sequence. */
 .drip-film.is-static { height: auto; padding: clamp(90px, 18vw, 130px) var(--gutter); }
+.is-static .df-stage { height: auto; overflow: visible; }
 .is-static .df-head { position: static; flex-wrap: wrap; }
 .is-static .df-question, .is-static .df-answer { position: static; opacity: 1; }
 .is-static .df-question { margin-top: 40px; padding: 0; font-size: clamp(52px, 14vw, 90px); justify-content: flex-start; text-align: left; }
@@ -733,6 +737,10 @@ ol, ul { margin: 0; padding: 0; list-style: none; }
 .df-compact-copy, .df-scroll-cue { display: none; }
 @media (max-width: 899px) {
   .drip-film.is-phone-film:not(.is-static) {
+    height: 410svh; min-height: 2132px;
+  }
+  .is-phone-film:not(.is-static) .df-stage {
+    position: sticky; top: 0;
     display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr) auto; gap: 24px 20px;
     height: 100svh; min-height: 520px; padding: 84px var(--gutter) 28px;
@@ -747,7 +755,8 @@ ol, ul { margin: 0; padding: 0; list-style: none; }
   .is-phone-film:not(.is-static) .df-answer span { font-size: 38px; }
   .is-phone-film:not(.is-static) .df-phone { position: relative; grid-column: 1; grid-row: 2; align-self: center; justify-self: center; width: 100%; max-width: 210px; height: auto; max-height: 100%; aspect-ratio: 586 / 1246; right: auto; top: auto; margin: 0; filter: drop-shadow(8px 20px 18px rgba(0,0,0,.24)); }
   .is-phone-film:not(.is-static) .df-chapters { position: relative; grid-column: 2; grid-row: 2; width: auto; height: 100%; top: auto; left: auto; margin: 0; }
-  .is-phone-film:not(.is-static) .df-chapter { display: flex; flex-direction: column; justify-content: center; }
+  .is-phone-film:not(.is-static) .df-chapter { display: flex; flex-direction: column; justify-content: center; transform: translateY(10px); transition: opacity .18s, transform .22s ease-out; }
+  .is-phone-film:not(.is-static) .df-chapter.is-active { transform: none; }
   .is-phone-film:not(.is-static) .df-label { font-size: 16px; line-height: 1.15; gap: 8px; }
   .is-phone-film:not(.is-static) .df-label span { padding-top: 2px; font-size: 10px; }
   .is-phone-film:not(.is-static) .df-chapter h3 { margin-top: 14px; font-size: clamp(24px, 6.4vw, 38px); line-height: 1.08; }

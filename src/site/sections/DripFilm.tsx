@@ -64,7 +64,11 @@ export default function DripFilm(): React.ReactElement {
       timeline.to({}, { duration: 0.5 }, INTRO + count)
     })
 
-    media.add('(max-width: 899px) and (min-height: 520px)', () => {
+    media.add({ phone: '(max-width: 899px)', landscape: '(orientation: landscape)' }, (context) => {
+      if (!context.conditions?.phone) return
+      // Choose the compact fallback on entry/rotation, not as browser chrome
+      // expands during a swipe and briefly changes the visible height.
+      if (window.innerHeight < 520) { setInteractive(false); setPhone(false); return }
       setInteractive(true)
       setPhone(true)
       const q = gsap.utils.selector(root)
@@ -72,9 +76,11 @@ export default function DripFilm(): React.ReactElement {
       const timeline = gsap.timeline({
         defaults: { ease: 'power2.inOut' },
         scrollTrigger: {
-          trigger: root, start: 'top top', pin: true,
-          end: () => `+=${(count + 1) * window.innerHeight * 0.75}`,
-          scrub: 0.35, invalidateOnRefresh: true, refreshPriority: 97,
+          // CSS keeps the stage in view; the document keeps its native inertia.
+          // Stable svh sizing also avoids a jump when Safari's toolbar retracts.
+          trigger: root, start: 'top top',
+          end: () => `+=${root.offsetHeight - root.querySelector<HTMLElement>('.df-stage')!.offsetHeight}`,
+          scrub: true, refreshPriority: 97,
           onUpdate: (self) => {
             const t = self.progress * total
             setChapter(t < PHONE_INTRO ? -1 : Math.min(count - 1, Math.floor(t - PHONE_INTRO)))
@@ -92,7 +98,6 @@ export default function DripFilm(): React.ReactElement {
       })
       timeline.to({}, { duration: 0.5 }, PHONE_INTRO + count)
     })
-    media.add('(max-width: 899px) and (max-height: 519px)', () => { setInteractive(false); setPhone(false) })
     return () => media.revert()
   }, [count])
 
@@ -106,6 +111,7 @@ export default function DripFilm(): React.ReactElement {
       data-scene={`${bg},${fg},${accent}`}
       data-title="Drip"
     >
+      <div className="df-stage">
       <header className="df-head">
         <span className="df-number">IV</span>
         <img className="df-wordmark" src={dripApp.wordmark} alt="Drip" />
@@ -138,6 +144,7 @@ export default function DripFilm(): React.ReactElement {
       <div className="df-progress" aria-hidden="true">
         {dripApp.chapters.map((item, i) => <i key={item.label} className={i <= chapter ? 'is-on' : ''} />)}
         <span className="df-scroll-cue">{chapter < 0 ? 'SCROLL TO PLAY' : `${String(chapter + 1).padStart(2, '0')} / 04 · KEEP SCROLLING ↓`}</span>
+      </div>
       </div>
     </section>
   )

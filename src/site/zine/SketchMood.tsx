@@ -541,7 +541,7 @@ export default function SketchMood({ onExit }: { onExit: () => void }): React.Re
     const fit = (): void => {
       const phone = window.matchMedia(PHONE).matches
       const width = phone ? root.clientWidth - 28 : root.clientWidth * 0.92
-      const height = window.innerHeight - (phone ? 224 : 170)
+      const height = (phone ? stage.clientHeight : window.innerHeight) - (phone ? 224 : 170)
       const scale = Math.min(width / (phone ? PAGE_W : PAGE_W * 2), height / PAGE_H)
       stage.style.setProperty('--scale', String(Math.max(0.1, scale)))
     }
@@ -594,6 +594,37 @@ export default function SketchMood({ onExit }: { onExit: () => void }): React.Re
       fit()
       const total = phone ? count * 2 - 1 : count
       setSteps(total)
+      if (phone) {
+        const track = stage.parentElement!
+        track.classList.add('is-native-book')
+        track.style.setProperty('--book-length', String(1 + total * .65))
+        render(0, true)
+        // Leave each page flat for most of its scroll interval. Only the last
+        // part turns the leaf, so a casual swipe lands on readable paper.
+        const trigger = ScrollTrigger.create({
+          trigger: track, start: 'top top',
+          end: () => `+=${track.offsetHeight - stage.offsetHeight}`,
+          onUpdate: (self) => {
+            const s = self.progress * total
+            const at = Math.floor(s)
+            const turn = clamp01((s - at - .6) / .4)
+            render(at + turn * turn * (3 - 2 * turn), true)
+          }
+        })
+        goTo.current = (target, immediate = false) => {
+          const at = Math.min(total, Math.max(0, target))
+          // Use the current layout even if an orientation-change refresh is
+          // still queued; the chapter picker must land on the requested page.
+          const top = track.getBoundingClientRect().top + window.scrollY + at / total * (track.offsetHeight - stage.offsetHeight)
+          window.scrollTo({ top, behavior: immediate ? 'instant' : 'smooth' })
+          if (immediate) { trigger.update(); render(at, true) }
+        }
+        return () => {
+          trigger.kill()
+          track.classList.remove('is-native-book')
+          track.style.removeProperty('--book-length')
+        }
+      }
       const state = { s: 0 }
       render(0, phone)
       const trigger = { current: null as ScrollTrigger | null }
@@ -645,7 +676,7 @@ export default function SketchMood({ onExit }: { onExit: () => void }): React.Re
           tween.progress(Math.min(total, Math.max(0, target)) / total)
         }
       }
-      // When you stop scrolling between two pages, the book settles on the nearer one.
+      // On wide screens, the book settles on the nearer spread.
       let settle = 0
       const onScroll = (): void => {
         window.clearTimeout(settle)
@@ -691,7 +722,7 @@ export default function SketchMood({ onExit }: { onExit: () => void }): React.Re
       <h1 className="sr-only">Arian Shamsabadi’s sketchbook</h1>
       {still ? <section className="sk-static" aria-label="Notebook pages">
         {pages.map((page, i) => <Face key={i} page={page} side={i % 2 ? 'back' : 'front'} folio={i - 1} />)}
-      </section> : <section className="sk-stage">
+      </section> : <div className="sk-scroll-track"><section className="sk-stage">
         <div className="sk-tools">
           <select aria-label="Notebook chapter" value={chapters.reduce((at, [candidate]) => candidate <= step ? candidate : at, 0)} onChange={(event) => { setDrawing(false); goTo.current(Number(event.target.value)) }}>
             {chapters.map(([at, label]) => <option key={at} value={at}>{label}</option>)}
@@ -715,7 +746,7 @@ export default function SketchMood({ onExit }: { onExit: () => void }): React.Re
           <span role="status" aria-live="polite">{step === 0 ? 'scroll to open ↓' : step >= steps ? 'the end' : `${step} / ${steps - 1}`}</span>
           <button type="button" onClick={() => goTo.current(step + 1)} disabled={step >= steps}>next →</button>
         </nav>
-      </section>}
+      </section></div>}
 
       <footer className="sk-footer">
         <p className="sk-footer-big">That’s the whole notebook.</p>

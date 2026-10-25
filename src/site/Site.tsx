@@ -145,7 +145,7 @@ export default function Site(): React.ReactElement {
       if (Math.abs(height - lastHeight) < 2) return
       lastHeight = height
       window.clearTimeout(timer)
-      timer = window.setTimeout(() => ScrollTrigger.refresh(), 200)
+      timer = window.setTimeout(() => ScrollTrigger.refresh(true), 200)
     })
     observer.observe(document.body)
     return () => {

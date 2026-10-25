@@ -400,7 +400,7 @@
   .z-print-base, .z-print-plate { transition: none; }
   .z-label:not(.z-label-drip) .z-print-plate { display: block; }
   .z-builds-title { padding-inline: var(--gutter); margin-bottom: 28px; font-size: clamp(60px, 18vw, 120px); line-height: 1.1; }
-  .z-cover-art img { transition: filter .4s; }
+  .z-cover-art img { transition: none; }
   .z-archive-reel { scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter); }
   .z-archive-reel .marquee-group { padding-inline: var(--gutter); }
   .z-archive-item { width: min(68vw, 320px); scroll-snap-align: center; }

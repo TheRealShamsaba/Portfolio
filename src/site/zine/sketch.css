@@ -24,6 +24,9 @@
 
 /* Stage: pinned while the pages turn */
 .sk-stage { position: relative; height: 100svh; overflow: hidden; }
+.sk-scroll-track { display: contents; }
+.sk-scroll-track.is-native-book { display: block; height: calc(100svh * var(--book-length)); }
+.is-native-book .sk-stage { position: sticky; top: 0; }
 .sk-desk { position: absolute; left: 50%; top: calc(50% + 6px); width: 0; height: 0; perspective: 2600px; }
 .sk-book {
   --camera: -0.5;

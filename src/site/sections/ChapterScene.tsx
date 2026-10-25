@@ -37,7 +37,7 @@ export default function ChapterScene({ chapter, number, kind, year }: { chapter:
     media.add('(max-width: 899px)', () => {
       const stage = root.querySelector('.chapter-stage')
       const image = root.querySelector('.chapter-media img')
-      const scrub = { trigger: stage, start: 'top top+=80', end: 'bottom top+=160', scrub: 0.6 }
+      const scrub = { trigger: stage, start: 'top top+=80', end: 'bottom top+=160', scrub: true }
       // Arrive upright before the visitor reaches the image; only its contents pan.
       gsap.from(root.querySelector('.chapter-media'), {
         y: 16, opacity: 0, duration: 0.55, ease: 'power2.out',

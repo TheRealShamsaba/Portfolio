@@ -21,7 +21,7 @@ function PrintImage({ src, alt, position = '50% 50%' }: { src: string; alt: stri
     if (!root || prefersReducedMotion()) return
     const mm = gsap.matchMedia()
     mm.add('(max-width: 860px)', () => {
-      const timeline = gsap.timeline({ scrollTrigger: { trigger: root, start: 'top 90%', end: 'top 45%', scrub: 0.35 } })
+      const timeline = gsap.timeline({ scrollTrigger: { trigger: root, start: 'top 90%', end: 'top 45%', scrub: true } })
       timeline.fromTo(root.querySelector('.z-print-base'), { filter: 'grayscale(1) contrast(1.25)' }, { filter: 'grayscale(0) contrast(1)', ease: 'none' }, 0)
       if (!root.closest('.z-label-drip')) timeline.to(root.querySelectorAll('.z-print-plate'), { x: 0, y: 0, opacity: 0, ease: 'none' }, 0)
     })
@@ -256,7 +256,7 @@ function Cover({ cover }: { cover: (typeof covers)[number] }): React.ReactElemen
     mm.add('(max-width: 860px)', () => {
       gsap.fromTo(root.querySelector('img'), { objectPosition: '50% 0%' }, {
         objectPosition: '50% 45%', ease: 'none',
-        scrollTrigger: { trigger: root.querySelector('.z-cover-art'), start: 'top 45%', end: 'bottom top+=160', scrub: 0.4 }
+        scrollTrigger: { trigger: root.querySelector('.z-cover-art'), start: 'top 45%', end: 'bottom top+=160', scrub: true }
       })
     })
     return () => mm.revert()

@@ -564,7 +564,11 @@ export default function SketchMood({ onExit }: { onExit: () => void }): React.Re
       leafEls.forEach((leaf, k) => {
         const local = clamp01(phone ? s - 2 * k : s - k)
         const angle = -180 * local
-        leaf.style.transform = `rotateY(${angle}deg)`
+        // The free edge lifts off the desk before the leaf crosses the spine.
+        const lift = Math.sin(Math.PI * local)
+        leaf.style.transform = `translateZ(${lift * 16}px) rotateY(${angle}deg) rotateX(${Math.sin(local * Math.PI * 2) * 1.2}deg)`
+        leaf.style.setProperty('--turn-shadow', String(lift * .18))
+        leaf.style.setProperty('--corner-lift', String(lift))
         leaf.style.zIndex = String(local > 0 && local < 1 ? count * 3 : local >= 0.5 ? count + k : count - k)
         fronts[k].style.setProperty('--shade', String(Math.min(local, 0.5) * 0.9))
         backs[k].style.setProperty('--shade', String(Math.min(1 - local, 0.5) * 0.9))

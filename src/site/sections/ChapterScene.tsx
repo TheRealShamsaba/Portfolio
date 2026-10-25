@@ -22,9 +22,9 @@ export default function ChapterScene({ chapter, number, kind, year }: { chapter:
         scrollTrigger: { trigger: root, start: 'top top', end: '+=170%', pin: true, scrub: 0.5, invalidateOnRefresh: true, refreshPriority: 100 - works.findIndex((work) => work.id === chapter.id) }
       })
       timeline
-        .fromTo(root.querySelector('.chapter-name'), { scale: 1.1, opacity: 1 }, { scale: 0.92, opacity: 0.12, duration: 1 })
-        .fromTo(root.querySelector('.chapter-media'), { y: () => window.innerHeight * 0.9, rotate: 4, scale: 0.72 }, { y: 0, rotate: 0, scale: 1, duration: 1 }, 0)
-        .to(root.querySelector('.chapter-media'), { x: () => window.innerWidth * 0.19, scale: 0.8, duration: 0.8 }, 1.05)
+        .fromTo(root.querySelector('.chapter-name'), { scale: 1.1, opacity: 1 }, { scale: 0.92, opacity: 0, duration: 1 })
+        .fromTo(root.querySelector('.chapter-media'), { y: () => window.innerHeight * 0.65, scale: 0.82 }, { y: 0, scale: 1, duration: 1 }, 0)
+        .to(root.querySelector('.chapter-media'), { x: () => window.innerWidth * 0.19, scale: 0.84, duration: 0.8 }, 1.05)
         .fromTo(root.querySelectorAll('.chapter-copy > *'), { x: -18, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, stagger: 0.06 }, 1.85)
         .to({}, { duration: 0.3 })
       // The chess chapter has no image; only website screenshots get this pan.

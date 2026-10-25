@@ -3,7 +3,7 @@ import PosterMood from './PosterMood'
 import MagazineMood from './MagazineMood'
 import SketchMood from './SketchMood'
 import { applyScene } from '../scenes'
-import { resetScroll } from '../motion'
+import { prefersReducedMotion, resetScroll } from '../motion'
 import { moods, type Mood } from './data'
 
 // The other side of the site: the same work, told three completely different ways.
@@ -23,6 +23,15 @@ export default function Zine({ onExit }: { onExit: () => void }): React.ReactEle
       return 'poster'
     }
   })
+  const [turn, setTurn] = React.useState(0)
+  const turnTimer = React.useRef(0)
+  React.useEffect(() => () => window.clearTimeout(turnTimer.current), [])
+  const changeMood = (next: Mood): void => {
+    window.clearTimeout(turnTimer.current)
+    if (next === mood) return
+    setTurn((value) => value + 1)
+    turnTimer.current = window.setTimeout(() => setMood(next), prefersReducedMotion() ? 0 : 420)
+  }
 
   React.useEffect(() => {
     applyScene(MOOD_SCENE[mood], 'The other side', true)
@@ -37,11 +46,12 @@ export default function Zine({ onExit }: { onExit: () => void }): React.ReactEle
 
   return (
     <div className={`zine-shell is-${mood}`}>
+      <div key={turn} className={`side-wipe ${turn ? 'is-on' : ''}`} aria-hidden="true"><span>A.S.</span></div>
       <header className="z-header">
         <span className="z-mark">A.S.</span>
         <nav className="z-moods" aria-label="Mood">
           {moods.map((option) => (
-            <button key={option.id} type="button" className={mood === option.id ? 'is-on' : ''} aria-pressed={mood === option.id} onClick={() => setMood(option.id)}>
+            <button key={option.id} type="button" className={mood === option.id ? 'is-on' : ''} aria-pressed={mood === option.id} onClick={() => changeMood(option.id)}>
               {option.label}
             </button>
           ))}

@@ -334,14 +334,33 @@ function GigPoster(): React.ReactElement {
 }
 
 function Archive(): React.ReactElement {
+  const featured = [archive[2], archive[0], archive[1], archive[7]]
+  const ref = React.useRef<HTMLElement>(null)
+  React.useEffect(() => {
+    if (prefersReducedMotion()) return
+    const ctx = gsap.context(() => {
+      gsap.utils.toArray<HTMLElement>('.z-exhibit').forEach((piece) => {
+        gsap.from(piece, { y: 36, opacity: 0, duration: .9, ease: 'power2.out', scrollTrigger: { trigger: piece, start: 'top 95%', once: true } })
+      })
+    }, ref)
+    return () => ctx.revert()
+  }, [])
   return (
-    <section className="z-archive">
+    <section className="z-archive" ref={ref}>
       <header className="z-archive-head">
         <h2>The designer years</h2>
         <p>Before the products, I made posters. This side of the site is built out of them.</p>
       </header>
+      <div className="z-exhibition">
+        {featured.map((poster, i) => (
+          <a className="z-exhibit" key={poster.id} href={poster.image} target="_blank" rel="noreferrer" data-cursor="view">
+            <img src={poster.image} alt={poster.title} loading="lazy" decoding="async" />
+            <span><small>0{i + 1} / ORIGINAL PRINT</small><b>{poster.title}</b></span>
+          </a>
+        ))}
+      </div>
       <Marquee className="z-archive-reel" speed={0.5}>
-        {archive.map((poster, i) => (
+        {archive.filter((poster) => !featured.some((piece) => piece.id === poster.id)).map((poster, i) => (
           <a key={poster.id} className="z-archive-item" href={poster.image} target="_blank" rel="noreferrer" style={{ '--tilt': `${((i % 3) - 1) * 1.6}deg` } as React.CSSProperties} data-cursor="view">
             <img src={poster.image} alt={poster.title} loading="lazy" decoding="async" />
             <span>{poster.title}</span>

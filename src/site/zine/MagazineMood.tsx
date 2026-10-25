@@ -1,17 +1,15 @@
 import React from 'react'
-import { Barcode } from '../Print'
 import { gsap, prefersReducedMotion, scrollToId } from '../motion'
 import { clients, dripApp, knightvision, profile, show } from '../data'
 
-// Hip-hop: the work as an issue of a 90s rap magazine. Cover, contents, the cover
-// story, who's next, a full-page ad, reviews, shout-outs and a subscription card.
+// An independent portfolio LP: album artwork, a track list and the liner notes.
 
 const contents: [string, string, string][] = [
-  ['014', 'Arian, in progress', 'mg-story'],
-  ['032', 'Who’s Next', 'mg-next'],
-  ['048', 'Drip', 'mg-ad'],
-  ['056', 'Side projects', 'mg-reviews'],
-  ['064', 'Shout Outs', 'mg-shouts']
+  ['01', 'The introduction', 'mg-story'],
+  ['02', 'On heavy rotation', 'mg-next'],
+  ['03', 'Drip — the solo project', 'mg-ad'],
+  ['04', 'The B-sides', 'mg-reviews'],
+  ['05', 'Credits & connections', 'mg-shouts']
 ]
 
 const interview: [string, string][] = [
@@ -43,9 +41,11 @@ const subscribe: [string, string][] = [
   ['Just saying hi', 'Hi Arian']
 ]
 
+const readChapter = (id: string): void => scrollToId(id, window.innerWidth <= 860 ? 80 : 96)
+
 export default function MagazineMood({ onExit }: { onExit: () => void }): React.ReactElement {
   const rootRef = React.useRef<HTMLDivElement>(null)
-  const [reading, setReading] = React.useState('000 · THE COVER')
+  const [reading, setReading] = React.useState(-1)
 
   React.useEffect(() => {
     const root = rootRef.current
@@ -53,14 +53,13 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
     let frame = 0
     const update = (): void => {
       frame = 0
-      if (!window.matchMedia('(max-width: 860px)').matches) return
       const middle = window.innerHeight * 0.4
-      const active = contents.find(([, , id]) => {
+      const active = contents.findIndex(([, , id]) => {
         const rect = root.querySelector(`#${id}`)?.getBoundingClientRect()
         return rect && rect.top <= middle && rect.bottom > middle
       })
       const toc = root.querySelector('#mg-toc')?.getBoundingClientRect()
-      setReading(active ? `${active[0]} · ${active[1].toUpperCase()}` : toc && toc.top <= middle && toc.bottom > middle ? '000 · IN THIS ISSUE' : '000 · THE COVER')
+      setReading(active >= 0 ? active : toc && toc.top <= middle ? 0 : -1)
       const rect = root.getBoundingClientRect()
       const progress = Math.min(1, Math.max(0, -rect.top / Math.max(1, rect.height - window.innerHeight)))
       root.style.setProperty('--issue-progress', String(progress))
@@ -75,15 +74,17 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
   React.useEffect(() => {
     const root = rootRef.current
     if (!root || prefersReducedMotion()) return
-    const ctx = gsap.context(() => {
-      const phone = window.matchMedia('(max-width: 860px)').matches
-      // The cover hits the stand: photo settles, masthead drops, cover lines slam on.
-      gsap.timeline({ defaults: { ease: 'expo.out' } })
-        .from('.mg-cover-photo', { scale: 1.18, duration: 2.2 })
-        .from('.mg-mast-title span', { yPercent: -120, duration: 1.1, stagger: 0.07 }, 0.2)
-        .from('.mg-cover .mg-line, .mg-banner, .mg-badge', { scale: phone ? 1 : 1.5, y: phone ? 14 : 0, opacity: 0, rotate: phone ? 0 : -4, duration: 0.7, stagger: 0.09, ease: phone ? 'power2.out' : 'back.out(1.8)' }, 0.6)
-        .from('.mg-autograph', { clipPath: 'inset(0 100% 0 0)', duration: 1.2, ease: 'power2.inOut' }, 1.3)
-      gsap.to('.mg-cover-photo', { yPercent: 12, ease: 'none', scrollTrigger: { trigger: '.mg-cover', start: 'top top', end: 'bottom top', scrub: true } })
+    const media = gsap.matchMedia()
+    media.add({ phone: '(max-width: 860px)', desktop: '(min-width: 861px)' }, (context) => {
+      const phone = Boolean(context.conditions?.phone)
+      const ctx = gsap.context(() => {
+      gsap.timeline({ defaults: { ease: 'power3.out' } })
+        .from('.mg-album-art', { y: 28, opacity: 0, duration: 1.1 })
+        .from('.mg-cover-photo', { scale: 1.08, duration: 1.8 }, 0)
+        .from('.mg-art-title', { xPercent: -18, opacity: 0, duration: 1.2, ease: 'expo.out' }, .15)
+        .from('.mg-album-copy > *', { y: 18, opacity: 0, duration: .8, stagger: .07 }, .2)
+      gsap.to('.mg-cover-photo', { yPercent: 5, ease: 'none', scrollTrigger: { trigger: '.mg-cover', start: 'top top', end: 'bottom top', scrub: true } })
+      gsap.to('.mg-session-track', { xPercent: -16, ease: 'none', scrollTrigger: { trigger: '.mg-session-strip', start: 'top bottom', end: 'bottom top', scrub: .5 } })
 
       gsap.from('.mg-toc li', { x: phone ? 0 : -60, opacity: 0, duration: 0.8, ease: 'expo.out', stagger: 0.07, scrollTrigger: { trigger: '.mg-toc', start: 'top 70%' } })
 
@@ -93,7 +94,7 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
         gsap.from(print, {
           clipPath: 'inset(0 0 100% 0)', duration: phone ? 1.2 : 0.65,
           ease: phone ? 'power3.inOut' : 'power2.out',
-          scrollTrigger: { trigger: phone ? feature : print, start: phone ? 'top 75%' : 'top 95%', once: true }
+          scrollTrigger: { trigger: phone ? feature : print, start: 'top 95%', once: true }
         })
         if (phone) {
           gsap.fromTo(feature.querySelector('img'), { filter: 'grayscale(1) contrast(1.25)' }, {
@@ -106,55 +107,59 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
           })
         }
       })
-      gsap.from('.mg-ad-sheet', { y: phone ? 24 : 120, rotate: phone ? 0 : 3, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: '.mg-ad', start: 'top 75%' } })
+      gsap.from('.mg-ad-sheet', { y: phone ? 24 : 60, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: '.mg-ad', start: 'top 75%' } })
       gsap.from('.mg-ad-phone', { y: phone ? 24 : 80, opacity: 0, duration: 0.8, ease: 'expo.out', stagger: 0.15, scrollTrigger: { trigger: '.mg-ad-phones', start: 'top 90%', once: true } })
       if (phone) gsap.from('.mg-story-photo img', { clipPath: 'inset(0 0 100% 0)', duration: 0.9, ease: 'power2.inOut', scrollTrigger: { trigger: '.mg-story-photo', start: 'top 85%', once: true } })
 
-    }, root)
-    return () => ctx.revert()
+      }, root)
+      return () => ctx.revert()
+    })
+    return () => media.revert()
   }, [])
 
   return (
     <div className="magazine" ref={rootRef}>
-      <h1 className="sr-only">REAL — Arian Shamsabadi’s portfolio, the magazine edition</h1>
       <section className="mg-cover" id="top">
-        <img className="mg-cover-photo" src={profile.portrait} alt="Arian Shamsabadi on the cover" />
-        <header className="mg-mast">
-          <span className="mg-mast-title" aria-label="Real">{'REAL'.split('').map((letter, i) => <span key={i}>{letter}</span>)}</span>
-          <span className="mg-mast-tag">Code · Culture · Product</span>
-          <span className="mg-mast-issue">No. 26 · Oct 2026 · $3.95</span>
-        </header>
-        <p className="mg-banner">The code issue</p>
-        <div className="mg-lines is-left">
-          <p className="mg-line is-hero"><b>Arian, in progress</b><span>Client work in Tehran and Istanbul. A studio, a chess engine, and an app of his own.</span></p>
-          <p className="mg-line is-red"><em>Exclusive</em> Inside Drip, the AI stylist</p>
+        <div className="mg-cover-topline"><span>REAL. RECORDS</span><span>INDEPENDENT WORK · VOL. 026</span></div>
+        <div className="mg-album-art">
+          <img className="mg-cover-photo" src={profile.portrait} alt="Arian Shamsabadi in Cappadocia" />
+          <span className="mg-art-title" aria-hidden="true">REAL.</span>
+          <span className="mg-art-credit">Arian Shamsabadi<br />The portfolio LP / 2026</span>
+          <span className="mg-art-catalogue" aria-hidden="true">AS—026</span>
         </div>
-        <div className="mg-lines is-right">
-          <p className="mg-line"><b>Tehran → Istanbul</b>3 sites. 3 languages. 1 team.</p>
-          <p className="mg-line is-yellow"><b>Plus</b>The chess engine that learns by beating itself</p>
+        <div className="mg-album-copy">
+          <p className="mg-kicker">The Hip-hop edition</p>
+          <h1>Arian,<br />in progress.</h1>
+          <p className="mg-artist">Arian Shamsabadi</p>
+          <p className="mg-album-deck">Design. Code. Culture.<br />A body of work, with a few B‑sides.</p>
+          <p className="mg-album-meta">Istanbul · 2026 · 5 chapters</p>
+          <div className="mg-album-actions">
+            <button type="button" className="mg-start" onClick={() => readChapter('mg-story')}>Explore the album <span aria-hidden="true">↓</span></button>
+            <button type="button" className="mg-track-button" onClick={() => readChapter('mg-toc')}>Track list</button>
+          </div>
+          <p className="mg-album-note">Written, designed & built by Arian.<br />Client releases. Personal experiments. Still recording.</p>
         </div>
-        <span className="mg-autograph">Arian S.</span>
-        <span className="mg-badge">Collector’s<br />issue</span>
-        <div className="mg-barcode"><Barcode code="REAL-26" /><small>0 26 · 74470 · 2026</small></div>
       </section>
 
       <section className="mg-toc-wrap" id="mg-toc">
-        <p className="mg-section">In this issue</p>
+        <div className="mg-toc-heading"><p className="mg-section">The track list</p><p>Two cities.<br />One body of work.</p><span>NO SKIPS. JUST SCROLL.</span></div>
         <ol className="mg-toc">
           {contents.map(([page, title, id]) => (
             <li key={id}>
-              <button type="button" onClick={() => scrollToId(id)} data-cursor="read">
+              <button type="button" onClick={() => readChapter(id)} data-cursor="read">
                 <span className="mg-toc-page">{page}</span>
-                <span className="mg-toc-title">{title}</span>
+                <span className="mg-toc-title">{title}<small>{["The person behind the work", "Three client releases", "An outfit check, built from scratch", "Research & conversations", "The people. The next project."][contents.findIndex((item) => item[2] === id)]}</small></span><span className="mg-toc-arrow" aria-hidden="true">↗</span>
               </button>
             </li>
           ))}
         </ol>
       </section>
 
+      <div className="mg-session-strip" aria-hidden="true"><div className="mg-session-track">{Array.from({ length: 3 }, (_, i) => <span key={i}>ARIAN, IN PROGRESS.</span>)}</div></div>
+
       <article className="mg-story" id="mg-story">
         <header className="mg-story-head">
-          <p className="mg-section">Cover story</p>
+          <p className="mg-section">01 / Liner notes</p>
           <h2 className="mg-headline"><span>Arian,</span><span>in progress</span></h2>
           <p className="mg-deck">I run Real Co. in Istanbul. Websites for clients, Drip for myself.</p>
           <p className="mg-byline">Words & build: Arian Shamsabadi · Photo: Cappadocia</p>
@@ -182,12 +187,12 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
 
       <section className="mg-next" id="mg-next">
         <header className="mg-next-head">
-          <p className="mg-section">Who’s next</p>
+          <p className="mg-section">02 / Client releases</p>
           <h2 className="mg-headline is-small"><span>Three sites</span><span>on heavy rotation</span></h2>
         </header>
         {next.map((site, i) => (
-          <article className="mg-feature" key={site.id}>
-            <span className="mg-feature-no">{String(i + 1).padStart(2, '0')}</span>
+          <article className={`mg-feature mg-feature-${site.id}`} key={site.id}>
+            <p className="mg-feature-no"><span>SIDE A / {String(i + 1).padStart(2, '0')}</span><span>{site.kicker} · 2026</span></p>
             <a className="mg-feature-print" href={site.url} target="_blank" rel="noreferrer" data-cursor="visit">
               <img src={site.image} alt={`${site.title} website`} loading="lazy" />
             </a>
@@ -199,12 +204,15 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
               <p className="mg-feature-facts">{site.facts}</p>
               <a className="mg-more" href={site.url} target="_blank" rel="noreferrer">{site.host} ↗</a>
             </div>
+            {i === 1 && <blockquote className="mg-feature-pull"><span>THE BRIEF, IN ONE LINE</span>“Every deal ends<br />in a conversation.”</blockquote>}
           </article>
         ))}
       </section>
 
       <section className="mg-ad" id="mg-ad">
         <div className="mg-ad-sheet">
+          <div className="mg-ad-repeat" aria-hidden="true">{Array.from({ length: 8 }, (_, i) => <span key={i}>DRESS RIGHT IN PUBLIC</span>)}</div>
+          <p className="mg-ad-edition">03 / THE SOLO PROJECT</p>
           <div className="mg-ad-title">
             <h2 className="mg-ad-hook"><span>Does this</span><span>work?</span></h2>
           </div>
@@ -223,11 +231,12 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
 
       <section className="mg-reviews" id="mg-reviews">
         <header>
-          <p className="mg-section">Side projects</p>
+          <p className="mg-section">The B-sides.</p>
           <p className="mg-reviews-note">Research at the keyboard. Conversations away from it.</p>
         </header>
-        {reviews.map((review) => (
+        {reviews.map((review, i) => (
           <article className="mg-review" key={review.title}>
+            <a className={`mg-review-art is-${i}`} href={review.url} target="_blank" rel="noreferrer" aria-label={review.cta}><img src={i === 0 ? "/posters/concept-perspective.webp" : show.image} alt={i === 0 ? "Perspective, an original poster by Arian" : "The Reasonable Show"} loading="lazy" /><span aria-hidden="true">{i === 0 ? "KNIGHT / VISION" : "THE REASONABLE SHOW"}</span></a>
             <div>
               <p className="mg-kicker">{review.kind}</p>
               <h3>{review.title}</h3>
@@ -240,7 +249,7 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
 
       <section className="mg-shouts" id="mg-shouts">
         <div className="mg-shouts-copy">
-          <p className="mg-section">Shout outs</p>
+          <p className="mg-section">05 / Credits & connections</p>
           <p className="mg-shouts-text">To the clients in Tehran and Istanbul who trusted us with the work. To the Real Co. team. To the guests who come on The Reasonable Show. And to the people trying Drip while it’s still taking shape.</p>
           <div className="mg-links">
             <a href={profile.telegram} target="_blank" rel="noreferrer">Telegram</a>
@@ -250,7 +259,7 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
           </div>
         </div>
         <div className="mg-card">
-          <span className="mg-card-cut" aria-hidden="true">✂</span>
+          <p className="mg-card-overline">THE NEXT RELEASE</p>
           <p className="mg-card-title">Write<br /><small>to Arian</small></p>
           <ul>
             {subscribe.map(([label, subject]) => (
@@ -262,10 +271,13 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
         </div>
       </section>
 
-      <nav className={`mg-reading ${reading === '000 · THE COVER' ? 'is-cover' : ''}`} aria-label="Magazine reading position">
+      <nav className={`mg-reading ${reading < 0 ? 'is-cover' : ''}`} aria-label="Album reading position">
+        <img src={profile.portrait} alt="" />
+        <div className="mg-reading-title"><small>NOW READING</small><span>{contents[Math.max(0, reading)][1]}</span></div>
+        <button type="button" className="mg-reading-prev" aria-label="Previous chapter" disabled={reading <= 0} onClick={() => readChapter(contents[reading - 1][2])}>←</button>
+        <button type="button" aria-label="Next chapter" disabled={reading >= contents.length - 1} onClick={() => readChapter(contents[reading + 1][2])}>→</button>
+        <button type="button" className="mg-reading-index" onClick={() => readChapter('mg-toc')}>Track list</button>
         <span className="mg-reading-fill" aria-hidden="true" />
-        <span>{reading}</span>
-        <button type="button" onClick={() => scrollToId('mg-toc')}>INDEX ↑</button>
       </nav>
     </div>
   )

@@ -45,6 +45,8 @@
   transform-style: preserve-3d;
   will-change: transform;
 }
+.sk-leaf::after { content: ''; position: absolute; inset: 14px 0 -10px 8px; z-index: -1; border-radius: 8px; box-shadow: 15px 24px 32px rgba(29,35,64,var(--turn-shadow,0)); pointer-events: none; }
+.sk-paper::after { content: ''; position: absolute; right: 0; bottom: 0; z-index: 4; width: 72px; height: 72px; background: linear-gradient(135deg,transparent 48%,#e2dbc8 66%,#fffaf0); opacity: calc(var(--corner-lift,0) * .6); pointer-events: none; }
 .sk-face {
   position: absolute;
   inset: 0;

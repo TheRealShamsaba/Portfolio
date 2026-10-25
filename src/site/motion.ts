@@ -41,7 +41,7 @@ export function useSmoothScroll(): void {
   }, [])
 }
 
-export function scrollToId(id: string): void {
+export function scrollToId(id: string, offset = 0): void {
   const target = id === 'top' ? 0 : document.getElementById(id)
   if (target === null) return
   if (lenis) {
@@ -51,10 +51,10 @@ export function scrollToId(id: string): void {
     // Keyboard focus and native anchor scrolling can move the browser between
     // Lenis frames. Synchronise before calculating a new smooth journey.
     lenis.scrollTo(window.scrollY, { immediate: true, force: true })
-    lenis.scrollTo(top, { duration: 1.1 })
+    lenis.scrollTo(Math.max(0, top - offset), { duration: 1.1 })
   }
   else if (target === 0) window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'instant' : 'smooth' })
-  else target.scrollIntoView({ behavior: prefersReducedMotion() ? 'instant' : 'smooth' })
+  else window.scrollTo({ top: Math.max(0, target.getBoundingClientRect().top + window.scrollY - offset), behavior: prefersReducedMotion() ? 'instant' : 'smooth' })
 }
 
 export { gsap, ScrollTrigger }

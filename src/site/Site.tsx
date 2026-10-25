@@ -155,7 +155,7 @@ export default function Site(): React.ReactElement {
     }
   }, [])
 
-  // Crossing over: a flash covers the swap, and you land at the top of the other side.
+  // A sheet crosses the viewport, concealing the swap at its fully closed frame.
   const flipTimer = React.useRef(0)
   React.useEffect(() => () => window.clearTimeout(flipTimer.current), [])
   const flip = React.useCallback((to?: 'normal' | 'moods') => {
@@ -163,7 +163,7 @@ export default function Site(): React.ReactElement {
     setFlash((count) => count + 1)
     flipTimer.current = window.setTimeout(() => {
       setSide((current) => to ?? (current === 'normal' ? 'moods' : 'normal'))
-    }, prefersReducedMotion() ? 0 : 300)
+    }, prefersReducedMotion() ? 0 : 420)
   }, [])
   const toMoods = React.useCallback(() => flip('moods'), [flip])
   const toNormal = React.useCallback(() => flip('normal'), [flip])
@@ -177,7 +177,7 @@ export default function Site(): React.ReactElement {
       <a className="skip-link" href="#main-content">Skip to content</a>
       <Loader onDone={onLoaded} />
       <div className="grain" aria-hidden="true" />
-      <div key={flash} className={`side-flash ${flash ? 'is-on' : ''}`} aria-hidden="true" />
+      <div key={flash} className={`side-wipe ${flash ? 'is-on' : ''}`} aria-hidden="true"><span>A.S.</span></div>
       {side === 'normal' ? <LightSide ready={ready} onDark={toMoods} /> : <Zine onExit={toNormal} />}
     </div>
   )

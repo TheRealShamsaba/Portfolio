@@ -593,14 +593,18 @@ ol, ul { margin: 0; padding: 0; list-style: none; }
 
 /* ───────────── Switching sides ───────────── */
 /* The flip between sides */
-.side-flash { position: fixed; inset: 0; z-index: 400; pointer-events: none; background: #fff; opacity: 0; }
-.side-flash.is-on { animation: side-flash 0.8s steps(6) both; }
-@keyframes side-flash {
-  0% { opacity: 0; }
-  20% { opacity: 1; background: #8d95f3; }
-  40% { opacity: 1; background: #fff; filter: invert(1); }
-  70% { opacity: 1; background: #ffd400; }
-  100% { opacity: 0; }
+.side-wipe { position: fixed; inset: 0; z-index: 400; display: grid; place-items: center; pointer-events: none; visibility: hidden; background: #e9e3d7; color: #1b1a18; box-shadow: -30px 0 90px #0003; transform: translateX(-105%); }
+.side-wipe span { font: 400 clamp(80px, 12vw, 180px)/1 var(--f-black); }
+.side-wipe.is-on { animation: paper-wipe .9s cubic-bezier(.65,0,.22,1) both; }
+@keyframes paper-wipe {
+  0% { visibility: visible; transform: translateX(-105%); }
+  42%, 55% { visibility: visible; transform: translateX(0); }
+  100% { visibility: hidden; transform: translateX(105%); }
+}
+
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  .chapter-media:not(.chapter-media-board) { padding-top: 32px; border-radius: 8px; }
+  .chapter .chapter-windowbar { position: absolute; inset: 0 0 auto; display: flex; align-items: center; justify-content: space-between; height: 32px; padding: 0 14px; background: #eae7e1; color: #383632; border-bottom: 1px solid #d2cec6; font: 10px/1 var(--f-mono); }
 }
 
 /* The way in: a small halo that turns to horns on hover. */

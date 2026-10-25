@@ -12,6 +12,12 @@ type UIStrings = {
   navContact: string
   langToggle: string
   introKicker: string
+  heroLiveWork: string
+  heroGithub: string
+  profileNoteLabel: string
+  dripConsoleTitle: string
+  dripSignals: string
+  dripRoadmap: string
   posterPreviewKicker: string
   posterPreviewTitle: string
   posterPreviewDesc: string
@@ -26,6 +32,12 @@ type UIStrings = {
   openRepo: string
   projectsKicker: string
   projectsTitle: string
+  projectsLead: string
+  liveSite: string
+  code: string
+  labKicker: string
+  labTitle: string
+  labDesc: string
   viewProject: string
   podcastKicker: string
   podcastTitle: string
@@ -35,6 +47,9 @@ type UIStrings = {
   contactTitle: string
   contactDesc: string
   sendEmail: string
+  contactTelegram: string
+  contactWhatsApp: string
+  contactDirectMessage: string
   postersKicker: string
   postersTitle: string
   postersDesc: string
@@ -68,6 +83,12 @@ const EN: UIStrings = {
   navContact: 'Contact',
   langToggle: 'فارسی',
   introKicker: 'INTRODUCTION',
+  heroLiveWork: 'See Live Work',
+  heroGithub: 'GitHub',
+  profileNoteLabel: 'Available for focused builds',
+  dripConsoleTitle: 'product console',
+  dripSignals: 'Signals',
+  dripRoadmap: 'Roadmap',
   posterPreviewKicker: 'POSTER PREVIEW',
   posterPreviewTitle: 'A few selected pieces',
   posterPreviewDesc: 'A quick sample from my full poster archive. For the full categorized showcase, open the posters page.',
@@ -82,6 +103,12 @@ const EN: UIStrings = {
   openRepo: 'Open Repository',
   projectsKicker: 'PROGRAMMING WORK',
   projectsTitle: 'Projects',
+  projectsLead: 'Live sites first. The programming projects stay in the lab, but the shipped websites get the spotlight.',
+  liveSite: 'Live Site',
+  code: 'Code',
+  labKicker: 'ENGINEERING LAB',
+  labTitle: 'Other builds and experiments',
+  labDesc: 'Smaller technical projects that show systems thinking, automation, ML practice, and backend logic.',
   viewProject: 'View Project',
   podcastKicker: 'VOICE',
   podcastTitle: 'Podcast',
@@ -91,6 +118,9 @@ const EN: UIStrings = {
   contactTitle: 'Let’s Build Something Good',
   contactDesc: 'If you think my style fits your team or project, message me. I’m always open to real work and good collaborations.',
   sendEmail: 'Send Me an Email',
+  contactTelegram: 'Telegram',
+  contactWhatsApp: 'WhatsApp',
+  contactDirectMessage: 'Direct message',
   postersKicker: 'DESIGN WORK',
   postersTitle: 'Posters',
   postersDesc: 'This is my poster archive. Click any piece to open it in gallery mode.',
@@ -121,6 +151,12 @@ const FA: UIStrings = {
   navContact: 'تماس',
   langToggle: 'EN',
   introKicker: 'معرفی',
+  heroLiveWork: 'دیدن کارهای زنده',
+  heroGithub: 'گیت‌هاب',
+  profileNoteLabel: 'آماده برای پروژه‌های جدی',
+  dripConsoleTitle: 'کنسول محصول',
+  dripSignals: 'سیگنال‌ها',
+  dripRoadmap: 'نقشه راه',
   posterPreviewKicker: 'منتخب پوسترها',
   posterPreviewTitle: 'چند کار انتخابی',
   posterPreviewDesc: 'نمونه‌ای کوتاه از آرشیو پوسترها. برای دیدن مجموعه کامل و دسته‌بندی‌شده، وارد صفحه پوسترها شوید.',
@@ -135,6 +171,12 @@ const FA: UIStrings = {
   openRepo: 'مشاهده کد',
   projectsKicker: 'برنامه‌نویسی',
   projectsTitle: 'پروژه‌ها',
+  projectsLead: 'اولویت با کارهای زنده است. پروژه‌های برنامه‌نویسی در بخش آزمایشگاه می‌مانند، اما سایت‌های منتشرشده در مرکز توجه هستند.',
+  liveSite: 'مشاهده سایت',
+  code: 'کد',
+  labKicker: 'آزمایشگاه مهندسی',
+  labTitle: 'ساخته‌ها و تجربه‌های دیگر',
+  labDesc: 'پروژه‌های کوچک‌تر فنی که تفکر سیستمی، اتوماسیون، تمرین ML و منطق بک‌اند را نشان می‌دهند.',
   viewProject: 'دیدن پروژه',
   podcastKicker: 'پادکست',
   podcastTitle: 'The Reasonable Show',
@@ -144,6 +186,9 @@ const FA: UIStrings = {
   contactTitle: 'بیایید همکاری کنیم',
   contactDesc: 'اگر فکر می‌کنید دیدگاه و سبک کاری من به پروژه یا تیم شما می‌خورد، خوشحال می‌شوم صحبت کنیم.',
   sendEmail: 'ارسال ایمیل',
+  contactTelegram: 'تلگرام',
+  contactWhatsApp: 'واتساپ',
+  contactDirectMessage: 'پیام مستقیم',
   postersKicker: 'طراحی',
   postersTitle: 'پوسترها',
   postersDesc: 'آرشیو پوسترهای طراحی‌شده توسط من. برای مشاهده هر اثر در حالت گالری، روی آن کلیک کنید.',
@@ -186,15 +231,90 @@ function localizeContent(locale: Locale): typeof portfolioContent {
     ...portfolioContent,
     profile: {
       ...portfolioContent.profile,
-      role: 'دانشجوی مهندسی کامپیوتر در استانبول',
-      intro: 'روی ساخت محصولات وب، طراحی بصری و پروژه‌های مهندسی تمرکز دارم.',
-      about: 'من دانشجوی مهندسی کامپیوتر در استانبول هستم. وب‌اپلیکیشن می‌سازم، پوستر طراحی می‌کنم و به پروژه‌ها با نگاه مهندسی و سیستم‌محور نزدیک می‌شوم. میزبان پادکست The Reasonable Show هستم؛ جایی برای بررسی ایده‌ها، تجربه‌ها و فکرهای واقعی بدون اغراق. به هوش مصنوعی، تفکر سیستمی و ساختن چیزهای کاربردی علاقه دارم.'
+      role: 'بنیان‌گذار و سازنده محصول در مرز هوش مصنوعی، نرم‌افزار، برند و رسانه.',
+      intro: 'استراتژی زمانی ارزش دارد که به محصولی قابل لمس تبدیل شود.',
+      about: 'ایده‌های اولیه را به سیستم‌های منسجم و واقعی تبدیل می‌کنم. اکنون Drip را می‌سازم، Real Co. را شکل می‌دهم و با مهندسی، طراحی و رسانه هر ایده را از اصول اولیه تا تجربه‌ای عمومی پیش می‌برم.'
     },
     skills: [
-      { title: 'توسعه وب', items: 'React، TypeScript، Vite، ساختاردهی رابط کاربری' },
-      { title: 'مهندسی و سیستم', items: 'تفکر سیستمی، مبانی نرم‌افزار، علاقه‌مند به AI' },
-      { title: 'طراحی بصری', items: 'پوستر، هویت بصری، محتوای رسانه‌ای' }
+      { title: 'ساخت فرانت‌اند', items: 'React، TypeScript، Vite، رابط واکنش‌گرا' },
+      { title: 'سلیقه محصول', items: 'چیدمان، تعامل، متن، سیستم بصری' },
+      { title: 'نگاه سیستمی', items: 'اتوماسیون، پروژه‌های ML، معماری کاربردی' }
     ],
+    featuredSites: portfolioContent.featuredSites.map((site) => {
+      if (site.id === 'dress-right-in-public') {
+        return {
+          ...site,
+          eyebrow: 'کار زنده شاخص',
+          summary: 'یک سایت متمرکز بر مد که بیشتر شبیه دنیای برند عمل می‌کند تا یک فروشگاه ساده. جهت بصری آن ادیتوریال، جسور و به‌یادماندنی است.',
+          role: 'توسعه فرانت‌اند، جهت‌دهی بصری، انتشار',
+          tags: ['سایت زنده', 'تجربه برند', 'رابط واکنش‌گرا', 'Vercel'],
+          highlights: [
+            'تبدیل سایت به تجربه‌ای قوی‌تر برای حضور عمومی برند',
+            'استفاده از جهت بصری تیزتر به جای حس قالب آماده',
+            'انتشار سایت واقعی و آماده استفاده'
+          ]
+        }
+      }
+
+      if (site.id === 'delux-grup') {
+        return {
+          ...site,
+          eyebrow: 'کار مشتری',
+          summary: 'یک سایت تجاری ساده بر اساس خواسته مشتری: مستقیم، قابل فهم و راحت برای بازدیدکننده.',
+          role: 'پیاده‌سازی مشتری، ساختاردهی، پولیش واکنش‌گرا',
+          tags: ['کار مشتری', 'سایت تجاری', 'درخواست ساده', 'رابط واکنش‌گرا'],
+          highlights: [
+            'هماهنگ با درخواست مشتری برای حضور آنلاین ساده و کاربردی',
+            'حفظ وضوح به جای اضافه کردن پیچیدگی غیرضروری',
+            'تحویل سایت تجاری زنده با پولیش واکنش‌گرا'
+          ]
+        }
+      }
+
+      return site
+    }),
+    drip: {
+      ...portfolioContent.drip,
+      label: 'اپلیکیشن شخصی در حال ساخت',
+      status: 'اپلیکیشن هوشمند مد و استایل',
+      summary:
+        'Drip محصول شخصی من است: اپلیکیشنی برای حافظه لباس‌ها، شناخت کمد و تصمیم‌های بهتر در استایل. Dress Right in Public دنیای عمومی این ایده است؛ Drip مغز محصولی است که پشت آن می‌سازم.',
+      stack: ['React', 'TypeScript', 'طراحی محصول', 'جهت‌دهی AI', 'سیستم استایل'],
+      signals: [
+        'تمرکز روی زمینه لباس و کمد به جای توصیه‌های تصادفی مد',
+        'سیستم برند و محصول با زبان بصری مستقل',
+        'ساخته‌شده به عنوان مسیر واقعی محصول، نه فقط یک کانسپت نمونه‌کار'
+      ],
+      roadmap: ['جریان بتای خصوصی', 'ظاهرهای ذخیره‌شده', 'زمینه کمد', 'منطق پیشنهاددهی']
+    },
+    ventures: portfolioContent.ventures.map((venture) => {
+      if (venture.id === 'drip') return {
+        ...venture,
+        label: '۰۱ / هوش مد و استایل',
+        status: 'بتای خصوصی در حال توسعه',
+        statement: 'کمد شخصی‌ای که به خاطر می‌سپارد.',
+        description: 'Drip یک دستیار هوشمند کمد لباس است که بر زمینه واقعی تکیه می‌کند: چه دارید، چه می‌پوشید و هر موقعیت واقعاً چه می‌خواهد.',
+        focus: ['کمد دیجیتال', 'بازخورد استایل', 'تصمیم خرید', 'زمینه شخصی'],
+        linkLabel: 'دیدن دنیای برند'
+      }
+      if (venture.id === 'real-co') return {
+        ...venture,
+        label: '۰۲ / شرکت در حال شکل‌گیری',
+        status: 'ساخت در سکوت',
+        statement: 'خانه‌ای برای محصولاتی با دیدگاه مشخص.',
+        description: 'لایه شرکتی پیرامون کارهایی که می‌سازم: محصولات، آزمایش‌ها و همکاری‌های منتخب با تفکر روشن، هویت قوی و اجرای مستقیم.',
+        focus: ['ساخت کسب‌وکار', 'جهت محصول', 'فناوری خلاق', 'همکاری منتخب']
+      }
+      return {
+        ...venture,
+        label: '۰۳ / رسانه مستقل',
+        status: 'در حال انتشار',
+        statement: 'ایده‌هایی که با صدای بلند آزموده می‌شوند.',
+        description: 'یک برنامه مستقل برای تبدیل ایده‌های فنی، فرهنگی و دشوار به گفت‌وگویی مستقیم، همراه با طنز و کنایه.',
+        focus: ['گفت‌وگو', 'مصاحبه', 'دیدگاه', 'رسانه بصری'],
+        linkLabel: 'دیدن آخرین قسمت'
+      }
+    }),
     projects: portfolioContent.projects.map((project) => {
       const map: Record<number, string> = {
         1: 'موتور شطرنج مبتنی بر یادگیری تقویتی برای بررسی تصمیم‌گیری و بهبود تدریجی مدل.',
@@ -267,7 +387,8 @@ export function I18nProvider({ children }: { children: React.ReactNode }): React
     window.history.replaceState({}, '', nextUrl)
 
     document.documentElement.lang = locale === 'fa' ? 'fa' : 'en'
-    document.documentElement.dir = locale === 'fa' ? 'rtl' : 'ltr'
+    document.documentElement.dir = 'ltr'
+    document.documentElement.dataset.locale = locale
   }, [locale])
 
   const value = React.useMemo<I18nValue>(() => ({

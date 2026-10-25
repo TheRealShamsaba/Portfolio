@@ -15,17 +15,19 @@ export default function HomePostersPreview(): React.ReactElement {
   const langQuery = locale === 'fa' ? '?lang=fa' : ''
 
   return (
-    <section id="posters-preview" className="deck-section reveal home-section">
-      <div className="section-shell">
+    <section id="posters-preview" className="deck-section reveal home-section visual-section">
+      <div className="visual-shell">
         <div className="reveal-item mb-8 home-preview-head">
           <div>
-            <p className="section-kicker">{t.posterPreviewKicker}</p>
-            <h2>{t.posterPreviewTitle}</h2>
-            <p className="mt-3 max-w-2xl">
+            <p className="section-kicker mixed-text" dir="auto">{t.posterPreviewKicker}</p>
+            <h2 className="mixed-text" dir="auto">{t.posterPreviewTitle}</h2>
+            <p className="mt-3 max-w-2xl mixed-text" dir="auto">
               {t.posterPreviewDesc}
             </p>
           </div>
-          <a href={`/showcase${langQuery}`} className="btn btn-primary text-sm">{t.seeAllPosters}</a>
+          <a href={`/showcase${langQuery}`} className="btn btn-primary text-sm">
+            <span className="mixed-text" dir="auto">{t.seeAllPosters}</span>
+          </a>
         </div>
 
         <div className="home-posters-grid">
@@ -39,8 +41,8 @@ export default function HomePostersPreview(): React.ReactElement {
                 decoding="async"
               />
               <div className="home-poster-copy">
-                <p className="text-xs uppercase tracking-[0.14em] text-gray-500">{t.categoryLabel[poster.category]}</p>
-                <h3 className="text-lg mt-1">{poster.title}</h3>
+                <p className="text-xs uppercase tracking-[0.14em] text-gray-500 mixed-text" dir="auto">{t.categoryLabel[poster.category]}</p>
+                <h3 className="text-lg mt-1 mixed-text" dir="auto">{poster.title}</h3>
               </div>
             </article>
           ))}

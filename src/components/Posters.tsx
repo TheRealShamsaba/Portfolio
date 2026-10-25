@@ -152,9 +152,9 @@ export default function Posters(): React.ReactElement {
         </div>
 
         <div className="reveal-item mb-10">
-          <p className="section-kicker">{t.postersKicker}</p>
-          <h2>{t.postersTitle}</h2>
-          <p className="max-w-2xl mt-3">
+          <p className="section-kicker mixed-text" dir="auto">{t.postersKicker}</p>
+          <h2 className="mixed-text" dir="auto">{t.postersTitle}</h2>
+          <p className="max-w-2xl mt-3 mixed-text" dir="auto">
             {t.postersDesc}
           </p>
           <div className="poster-filter-bar mt-6">
@@ -163,7 +163,7 @@ export default function Posters(): React.ReactElement {
               className={`poster-filter-btn ${activeCategory === 'all' ? 'is-active' : ''}`}
               onClick={() => setActiveCategory('all')}
             >
-              {t.postersAll}
+              <span className="mixed-text" dir="auto">{t.postersAll}</span>
             </button>
             {categoryOrder.map((category) => {
               const label = t.categoryLabel[category]
@@ -174,7 +174,7 @@ export default function Posters(): React.ReactElement {
                   className={`poster-filter-btn ${activeCategory === category ? 'is-active' : ''}`}
                   onClick={() => setActiveCategory(category)}
                 >
-                  {label}
+                  <span className="mixed-text" dir="auto">{label}</span>
                 </button>
               )
             })}
@@ -189,11 +189,11 @@ export default function Posters(): React.ReactElement {
             <section key={group.key} className="poster-group reveal-item">
               <div className="poster-group-head mb-5">
                 <div>
-                  <p className="poster-group-display">{group.display}</p>
-                  <h3 className="text-2xl text-gray-900">{group.title}</h3>
-                  <p className="text-sm mt-1">{group.subtitle}</p>
+                  <p className="poster-group-display mixed-text" dir="auto">{group.display}</p>
+                  <h3 className="text-2xl text-gray-900 mixed-text" dir="auto">{group.title}</h3>
+                  <p className="text-sm mt-1 mixed-text" dir="auto">{group.subtitle}</p>
                 </div>
-                <p className="poster-lane-hint">{t.postersScrollHint}</p>
+                <p className="poster-lane-hint mixed-text" dir="auto">{t.postersScrollHint}</p>
               </div>
 
               <div className="poster-track">
@@ -230,12 +230,12 @@ export default function Posters(): React.ReactElement {
                         </button>
 
                         <div className="poster-caption">
-                          <p className="poster-index">{group.title} {String(index + 1).padStart(2, '0')}</p>
-                          <h3 className="mb-2 text-gray-900">{poster.title}</h3>
-                          <p className="text-sm text-gray-700 mb-4">{poster.description}</p>
+                          <p className="poster-index mixed-text" dir="auto">{group.title} <span className="latin-text">{String(index + 1).padStart(2, '0')}</span></p>
+                          <h3 className="mb-2 text-gray-900 mixed-text" dir="auto">{poster.title}</h3>
+                          <p className="text-sm text-gray-700 mb-4 mixed-text" dir="auto">{poster.description}</p>
                           <div className="flex flex-wrap gap-2">
                             {poster.tags.map((tag) => (
-                              <span key={tag} className="poster-chip">
+                              <span key={tag} className="poster-chip mixed-text" dir="auto">
                                 {tag}
                               </span>
                             ))}
@@ -280,13 +280,13 @@ export default function Posters(): React.ReactElement {
           </div>
 
           <aside className="poster-lightbox-meta">
-            <p className="section-kicker mb-2">{t.categoryLabel[activePoster.category]}</p>
-            <h3 className="text-2xl text-gray-900 mb-3">{activePoster.title}</h3>
-            <p className="text-sm mb-4">{activePoster.description}</p>
-            <p className="text-sm mb-4">{localizedCategoryMeta[activePoster.category].desc}</p>
+            <p className="section-kicker mb-2 mixed-text" dir="auto">{t.categoryLabel[activePoster.category]}</p>
+            <h3 className="text-2xl text-gray-900 mb-3 mixed-text" dir="auto">{activePoster.title}</h3>
+            <p className="text-sm mb-4 mixed-text" dir="auto">{activePoster.description}</p>
+            <p className="text-sm mb-4 mixed-text" dir="auto">{localizedCategoryMeta[activePoster.category].desc}</p>
             <div className="flex flex-wrap gap-2">
               {activePoster.tags.map((tag) => (
-                <span key={tag} className="poster-chip">
+                <span key={tag} className="poster-chip mixed-text" dir="auto">
                   {tag}
                 </span>
               ))}

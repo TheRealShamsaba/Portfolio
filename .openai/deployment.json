@@ -1,0 +1,14 @@
+{
+  "project_id": "appgprj_6ade5dd807d08191ba9fed5e5ff34c84",
+  "version_id": "appgprj_6ade5dd807d08191ba9fed5e5ff34c84~appgver_1041dd5ba8848191bb02a41833a3ca2c",
+  "deployment_id": "appgdep_6ade737c6cc881919fb5937cab25dab4",
+  "source_commit": "28e87335eecf28ad8300ce20d6a92d6019cc8afa",
+  "url": "https://arian.realcompanys.com",
+  "custom_domain": "arian.realcompanys.com",
+  "custom_domain_id": "appgdom_6ade5ee674d88191b27603aa272ee4b6",
+  "custom_domain_status": "active",
+  "published_at": "2026-10-25T21:24:27Z",
+  "hosting_url": "https://arian-realcompanys.noblesquid18.chatgpt.site",
+  "ssl_status": "active",
+  "verified_at": "2026-10-25T21:25:08Z"
+}

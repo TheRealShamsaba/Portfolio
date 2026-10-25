@@ -6,54 +6,43 @@ interface HeaderProps {
 }
 
 export default function Header({ isPostersPage = false }: HeaderProps): React.ReactElement {
-  const { locale, setLocale, t, content } = useI18n()
-  const { name, avatar } = content.profile
+  const { locale, setLocale, content } = useI18n()
   const homePrefix = isPostersPage ? '/' : ''
   const langQuery = locale === 'fa' ? '?lang=fa' : ''
-  const showcaseHref = `/showcase${langQuery}`
+  const label = locale === 'fa'
+    ? { map: 'نقشه فعالیت', work: 'مدارک', voice: 'رسانه', contact: 'تماس', current: 'اکنون' }
+    : { map: 'Working map', work: 'Evidence', voice: 'Notes & voice', contact: 'Contact', current: 'Current focus' }
 
   return (
-    <header className="sticky top-0 z-50 site-header">
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-4 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <img
-            className="w-10 h-10 rounded-full border border-gray-300"
-            src={avatar}
-            alt={`${name} avatar`}
-          />
-          <div>
-            <p className="text-sm uppercase tracking-[0.18em] text-gray-500">{t.brand}</p>
-            <p className="text-base font-semibold text-gray-900 leading-none">{name}</p>
-          </div>
+    <header className={`site-header exec-header ${isPostersPage ? 'is-showcase' : ''}`}>
+      <div className="exec-nav-shell">
+        <a href="/" className="exec-brand" aria-label="Arian Shamsabadi home">
+          <span className="exec-brand-mark latin-text">AS</span>
+          <span className="exec-brand-copy">
+            <strong className="latin-text">Arian Shamsabadi</strong>
+            <small className="mixed-text" dir="auto">Founder &amp; product builder</small>
+          </span>
+        </a>
+
+        <nav className="exec-nav-links" aria-label="Primary navigation">
+          <a href={`${homePrefix}#about`}><span>01</span>{label.map}</a>
+          <a href={`${homePrefix}#projects`}><span>02</span>{label.work}</a>
+          <a href={`${homePrefix}#podcast`}><span>03</span>{label.voice}</a>
+          <a href={`/showcase${langQuery}`}><span>04</span>Visual archive</a>
+        </nav>
+
+        <div className="exec-rail-status">
+          <span className="mixed-text" dir="auto">{label.current}</span>
+          <strong className="latin-text">Drip / Real Co.</strong>
+          <small className="latin-text">Istanbul, Türkiye</small>
         </div>
 
-        <div className="flex items-center gap-3 sm:gap-7">
-          <nav className="hidden md:flex gap-5">
-            <a href={`${homePrefix}#about`} className="nav-link">
-              {t.navAbout}
-            </a>
-            <a href={showcaseHref} className="nav-link">
-              {t.navPosters}
-            </a>
-            <a href={`${homePrefix}#case-studies`} className="nav-link">
-              {t.navWork}
-            </a>
-            <a href={`${homePrefix}#podcast`} className="nav-link">
-              {t.navPodcast}
-            </a>
-          </nav>
-          <button
-            type="button"
-            className="btn btn-secondary text-sm"
-            onClick={() => setLocale(locale === 'en' ? 'fa' : 'en')}
-          >
-            {t.langToggle}
+        <div className="exec-nav-actions">
+          <button type="button" className="exec-lang" onClick={() => setLocale(locale === 'en' ? 'fa' : 'en')}>
+            {locale === 'en' ? 'FA' : 'EN'}
           </button>
-          <a
-            href={`${homePrefix}#contact`}
-            className="btn btn-secondary text-sm"
-          >
-            {t.navContact}
+          <a href={`${homePrefix}#contact`} className="exec-contact-link">
+            {label.contact}<span aria-hidden="true">↗</span>
           </a>
         </div>
       </div>

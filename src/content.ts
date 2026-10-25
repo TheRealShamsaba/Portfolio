@@ -19,7 +19,50 @@ export interface Project {
   description: string
   desc: string
   link: string
+  liveUrl?: string
+  repoUrl?: string
+  image?: string
+  role?: string
+  note?: string
   tags: string[]
+}
+
+export interface FeaturedSite {
+  id: string
+  title: string
+  eyebrow: string
+  summary: string
+  liveUrl: string
+  repoUrl?: string
+  image?: string
+  role: string
+  year: string
+  tags: string[]
+  highlights: string[]
+}
+
+export interface DripProduct {
+  name: string
+  label: string
+  logo: string
+  status: string
+  summary: string
+  stack: string[]
+  signals: string[]
+  roadmap: string[]
+}
+
+export interface Venture {
+  id: string
+  name: string
+  label: string
+  status: string
+  statement: string
+  description: string
+  focus: string[]
+  link?: string
+  linkLabel?: string
+  accent: 'acid' | 'orange' | 'ice'
 }
 
 export interface CaseStudy {
@@ -50,22 +93,107 @@ export const categoryMeta = {
 export const portfolioContent = {
   profile: {
     name: 'Arian Shamsabadi',
-    role: 'Computer engineering student in Istanbul building clean web products and visual work.',
+    role: 'Founder & product builder working across AI, software, brand, and media.',
     avatar: '/profile.webp',
     intro:
-      'I build with React, TypeScript, and Vite, and I focus on clean structure, clear UI, and shipped work.',
+      'Strategy is only useful when it becomes a product people can touch.',
     about:
-      'I am a computer engineering student based in Istanbul. I build web products, design poster series, and work on engineering projects with a systems mindset. I host The Reasonable Show, where I share unfiltered thinking with comedy and sarcasm. I care about AI, systems thinking, and execution. I want my work to show range, but more importantly, that I ship.',
+      'I turn early ideas into structured, working systems. Right now I am building Drip, shaping Real Co., and using engineering, design, and media to move each idea from first principles to a real public experience.',
     email: 'arianshamsabadi@gmail.com',
     telegram: 'https://t.me/Therealshamsaba',
     whatsapp: 'https://wa.me/message/Z6P4QVVV2MIOC1',
     socialLink: 'https://github.com/TheRealShamsaba'
   },
   skills: [
-    { title: 'Web Product Development', items: 'React, TypeScript, Vite, UI structure' },
-    { title: 'Engineering Systems', items: 'Embedded basics, systems thinking, AI interest' },
-    { title: 'Design Direction', items: 'Posters, identity, media visuals, satire' }
+    { title: 'Product', items: 'Strategy, architecture, experience, launch' },
+    { title: 'Technology', items: 'Applied AI, software systems, web and mobile' },
+    { title: 'Brand', items: 'Positioning, visual direction, content and voice' }
   ] as SkillGroup[],
+  ventures: [
+    {
+      id: 'drip',
+      name: 'Drip',
+      label: '01 / Fashion intelligence',
+      status: 'Private beta in development',
+      statement: 'A personal wardrobe that remembers.',
+      description: 'Drip is an AI-powered wardrobe assistant built around real closet context: what you own, what you wear, and what a moment actually calls for. The product spans iOS, API, web, storage, and recommendation workflows.',
+      focus: ['Digital closet', 'Outfit feedback', 'Purchase decisions', 'Personal context'],
+      link: 'https://dressrightinpublic.com/',
+      linkLabel: 'Explore the brand world',
+      accent: 'acid'
+    },
+    {
+      id: 'real-co',
+      name: 'Real Co.',
+      label: '02 / Company in formation',
+      status: 'Building quietly',
+      statement: 'A home for products with a point of view.',
+      description: 'The company layer around the work I am building: products, experiments, and selective collaborations shaped by clear thinking, strong identity, and hands-on execution.',
+      focus: ['Venture building', 'Product direction', 'Creative technology', 'Selective partnerships'],
+      accent: 'orange'
+    },
+    {
+      id: 'reasonable-show',
+      name: 'The Reasonable Show',
+      label: '03 / Independent media',
+      status: 'Publishing',
+      statement: 'Ideas tested out loud.',
+      description: 'An independent show where technical, cultural, and uncomfortable ideas get translated into direct conversation—with enough comedy and sarcasm to keep it honest.',
+      focus: ['Conversations', 'Interviews', 'Commentary', 'Visual media'],
+      link: 'https://youtu.be/9iLwSkk9k6U?si=rIaMDLzxdY-eHTSO',
+      linkLabel: 'Watch the latest episode',
+      accent: 'ice'
+    }
+  ] as Venture[],
+  featuredSites: [
+    {
+      id: 'dress-right-in-public',
+      title: 'Dress Right in Public',
+      eyebrow: 'Flagship live build',
+      summary: 'A fashion-focused website built to feel more like a brand world than a plain storefront. The direction leans editorial, bold, and memorable.',
+      liveUrl: 'https://dressrightinpublic.com/',
+      image: '/projects/dressrightinpublic.png',
+      role: 'Frontend development, visual direction, deployment',
+      year: '2026',
+      tags: ['Live Website', 'Brand Experience', 'Responsive UI', 'Vercel'],
+      highlights: [
+        'Turned the site into a stronger public-facing brand experience',
+        'Used a sharper visual direction instead of a generic template feel',
+        'Shipped the production website and live deployment'
+      ]
+    },
+    {
+      id: 'delux-grup',
+      title: 'Delux Grup',
+      eyebrow: 'Multilingual automotive platform',
+      summary: 'A Persian, Turkish, and English vehicle platform connecting inventory, car details, financing, sales leads, and location-driven discovery.',
+      liveUrl: 'https://deluxgrup.com.tr/',
+      image: '/projects/deluxgrup.png',
+      role: 'Product structure, frontend, multilingual flows',
+      year: '2026',
+      tags: ['Multilingual', 'Automotive', 'Admin System', 'Responsive UI'],
+      highlights: [
+        'Structured inventory, vehicle detail, installment, sell, contact, and local SEO flows',
+        'Designed admin workflows for listings, leads, statuses, translations, and analytics',
+        'Delivered a production-facing experience in Persian, Turkish, and English'
+      ]
+    }
+  ] as FeaturedSite[],
+  drip: {
+    name: 'Drip',
+    label: 'Own app in progress',
+    logo: '/projects/drip-logo.png',
+    status: 'Fashion intelligence app',
+    summary:
+      'Drip is my own product: a fashion intelligence app for outfit memory, wardrobe context, and sharper style decisions. Dress Right in Public is the public-facing world around the idea; Drip is the product brain I am building behind it.',
+    stack: ['React', 'TypeScript', 'Product Design', 'AI Direction', 'Style Systems'],
+    signals: [
+      'Outfit and wardrobe context instead of random fashion advice',
+      'A brand/product system with its own visual language',
+      'Built as a real app direction, not only a portfolio concept'
+    ],
+    roadmap: ['Private beta flow', 'Saved looks', 'Closet context', 'Recommendation logic']
+  } as DripProduct,
   posters: [
     {
       id: 'concept-greatness-and-honor',
@@ -278,8 +406,8 @@ export const portfolioContent = {
     {
       id: 1,
       title: 'KnightVision',
-      description: 'A reinforcement-learning chess engine project built to explore decision systems through self-play and iterative model tuning.',
-      desc: 'A reinforcement-learning chess engine project built to explore decision systems through self-play and iterative model tuning.',
+      description: 'A custom reinforcement-learning chess engine with legal move generation, policy/value heads, self-play, data pipelines, and Stockfish evaluation.',
+      desc: 'A custom reinforcement-learning chess engine with legal move generation, policy/value heads, self-play, data pipelines, and Stockfish evaluation.',
       link: 'https://github.com/TheRealShamsaba/KnightVision',
       tags: ['Python', 'Reinforcement Learning', 'Neural Networks', 'Chess Engine']
     },
@@ -294,8 +422,8 @@ export const portfolioContent = {
     {
       id: 3,
       title: 'Movie Recommender System',
-      description: 'A recommendation project that suggests similar movies from user input to practice model-based ranking logic.',
-      desc: 'A recommendation project that suggests similar movies from user input to practice model-based ranking logic.',
+      description: 'A MovieLens recommendation system using collaborative filtering, item-based KNN, cross-validation, and RMSE/MAE benchmarking.',
+      desc: 'A MovieLens recommendation system using collaborative filtering, item-based KNN, cross-validation, and RMSE/MAE benchmarking.',
       link: 'https://github.com/TheRealShamsaba/Movie-Recommender-system',
       tags: ['Python', 'Machine Learning', 'Recommendation System', 'Jupyter']
     },

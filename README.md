@@ -1,28 +1,38 @@
-# Portfolio (Vite + React)
+# Arian Shamsabadi — Portfolio
 
-This is a minimal portfolio scaffold built with Vite and React.
+A personal portfolio built with React, TypeScript, Vite, GSAP and Lenis.
 
-Quick start:
+## Development
 
-```bash
-cd /Users/shamsaba/Documents/code/prtofolio
+```sh
 npm install
 npm run dev
+npm run typecheck
+npm run build
+npm run preview
 ```
 
-Current structure:
-- `index.html` - app entry
-- `src/main.tsx` - React bootstrap
-- `src/App.tsx` - page composition
-- `src/content.ts` - single place for your name, bio, projects, posters, and links
-- `src/components/` - section components (`Header`, `About`, `Posters`, `Projects`, `Podcast`, `Contact`)
-- `src/styles.css` - Tailwind styles and utilities
+The dev server normally runs at http://localhost:5173. Production is hosted by Sites using the static Vite build in `dist/`. The Site identity is in `.openai/hosting.json`; deployment and custom-domain identifiers are in `.openai/deployment.json`.
 
-Next steps I can do for you:
-- Add your real content and links inside `src/content.ts`
-- Wire a contact form (Formspree/Netlify) to collect messages
-- Add deployment config for Vercel/Netlify/GitHub Pages
-- Improve styling, fonts, accessibility
+Live portfolio: https://arian.realcompanys.com
 
-Tell me which content and assets to add and I’ll wire them in.
-# Portfolio
+Hosting URL: https://arian-realcompanys.noblesquid18.chatgpt.site
+
+Custom domain: `arian.realcompanys.com`. The first published source snapshot is in the Site source repository, separate from this checkout’s existing GitHub remote. When publishing an update, copy the current application into the Site checkout and use the Sites source workflow to build, push, package, save and deploy the matching version. Never create another Site for this project.
+
+## Current site
+
+`src/main.tsx` loads `src/site/Site.tsx`. The older `src/App.tsx` and `src/components/` are retained from earlier iterations and are not the active site.
+
+- `src/site/data.ts`: profile, project stories, contact details and featured work.
+- `src/site/sections/`: introduction, programme, client work, Drip, chess, podcast, letter, poster archive and contact.
+- `src/site/zine/`: the alternate poster, magazine and sketchbook views. Their header switcher changes the presentation of the same work.
+- `src/site/motion.ts`: shared animation setup, smooth scrolling and navigation.
+- `src/site/site.css`: base styles and the main portfolio; alternate-view styles sit beside their components.
+- `public/`: original photography, poster artwork and project screenshots.
+
+## Responsive behaviour
+
+The main project scenes use pinned animation above 900px. Phones keep normal vertical scrolling with a full-screen portrait cover, larger project previews that pan as you scroll, and complete project stories. Drip is a finite vertical scroll film on phones: the stage holds while its four screens advance, then releases into KnightVision. Reduced motion shows every chapter as a static sequence. The poster archive uses full-colour, swipeable artwork with scroll snapping. The alternate views adapt at 860px. Posters brings print layers into register and pans site artwork with scrolling. Hip-hop has colour reveals and a mobile section index. The sketchbook shows one page at a time on phones and a spread on larger screens, with a mobile chapter picker and an explicit touch drawing mode; reduced motion shows a readable sequence of static pages.
+
+Before publishing, check the introduction, project links, Drip, contact actions and all three alternate views at both phone and desktop widths. Animation-heavy changes should also be checked after a fresh page load.

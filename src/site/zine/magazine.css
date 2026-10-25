@@ -355,3 +355,7 @@
   .mg-reading .mg-reading-beat { min-width: 46px; font-size: 9px; }
   .mg-reading button[aria-label="Next chapter"] { min-width: 44px; }
 }
+
+@media (min-width:480px) and (max-width:860px) {
+  .mg-cover-photo { width: 130%; left: -15%; object-position: 50% 72%; }
+}

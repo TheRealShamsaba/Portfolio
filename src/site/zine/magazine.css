@@ -342,3 +342,16 @@
   .mg-ad-hook { font-size: clamp(58px,20cqw,100px); }
   .mg-reviews { padding-block: 70px; }
 }
+
+/* The groove is opt-in, and its controls stay with the record. */
+.mg-cover-beat { position: absolute; left: var(--gutter); bottom: 26px; z-index: 5; min-height: 48px; padding: 10px 18px; border: 1px solid #ffffff50; border-radius: 6px; background: #14121299; color: #fff2e7; backdrop-filter: blur(12px); font: 500 13px/1.4 var(--f-body); }
+.mg-cover-beat[aria-pressed="true"], .mg-reading-beat[aria-pressed="true"] { background: #bc392a; border-color: #bc392a; }
+.mg-cover-beat:disabled { opacity: .55; }
+.mg-reading .mg-reading-title { flex: 1; min-width: 0; min-height: 44px; text-align: left; }
+.mg-reading .mg-reading-beat { min-width: 58px; padding-inline: 6px; border-radius: 5px; font-size: 10px; }
+@media (max-width:860px) {
+  .mg-cover-beat { left: 20px; bottom: 24px; min-height: 44px; padding-inline: 14px; font-size: 12px; }
+  .mg-reading .mg-reading-index { display: none; }
+  .mg-reading .mg-reading-beat { min-width: 46px; font-size: 9px; }
+  .mg-reading button[aria-label="Next chapter"] { min-width: 44px; }
+}

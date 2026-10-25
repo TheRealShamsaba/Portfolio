@@ -1,6 +1,7 @@
 import React from 'react'
 import { gsap, prefersReducedMotion, scrollToId } from '../motion'
 import { clients, dripApp, knightvision, profile, show } from '../data'
+import useRecordBeat from './useRecordBeat'
 
 // An independent portfolio LP: album artwork, a track list and the liner notes.
 
@@ -46,6 +47,8 @@ const readChapter = (id: string): void => scrollToId(id, window.innerWidth <= 86
 export default function MagazineMood({ onExit }: { onExit: () => void }): React.ReactElement {
   const rootRef = React.useRef<HTMLDivElement>(null)
   const [reading, setReading] = React.useState(-1)
+  const beat = useRecordBeat()
+  const beatLabel = beat.unavailable ? 'Beat unavailable' : beat.on ? 'Beat off' : 'Beat on'
 
   React.useEffect(() => {
     const root = rootRef.current
@@ -149,6 +152,7 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
           <p className="mg-album-note">Written, designed & built by Arian.<br />Client releases. Personal experiments. Still recording.</p>
         </div>
         <div className="mg-cover-end" aria-hidden="true"><p>AN INDEPENDENT RELEASE / 2026</p><h2>SIDE A.<br />THE WORK.</h2><span>Keep scrolling. Drop into the first track. ↓</span></div>
+        <button type="button" className="mg-cover-beat" aria-pressed={beat.on} disabled={beat.unavailable} onClick={() => void beat.toggle()} title="Original instrumental loop · 88 BPM">{beatLabel}</button>
         <button type="button" className="mg-cover-cta" onClick={() => readChapter('mg-toc')}>Drop into Side A <span aria-hidden="true">↓</span></button>
       </section>
 
@@ -283,9 +287,10 @@ export default function MagazineMood({ onExit }: { onExit: () => void }): React.
 
       <nav className={`mg-reading ${reading < 0 ? 'is-cover' : ''}`} aria-label="Album reading position">
         <img src={profile.portrait} alt="" />
-        <div className="mg-reading-title"><small>NOW READING</small><span>{contents[Math.max(0, reading)][1]}</span></div>
+        <button type="button" className="mg-reading-title" aria-label="Open track list" onClick={() => readChapter('mg-toc')}><small>NOW READING</small><span>{contents[Math.max(0, reading)][1]}</span></button>
         <button type="button" className="mg-reading-prev" aria-label="Previous chapter" disabled={reading <= 0} onClick={() => readChapter(contents[reading - 1][2])}>←</button>
         <button type="button" aria-label="Next chapter" disabled={reading >= contents.length - 1} onClick={() => readChapter(contents[reading + 1][2])}>→</button>
+        <button type="button" className="mg-reading-beat" aria-pressed={beat.on} disabled={beat.unavailable} onClick={() => void beat.toggle()} title="Original instrumental loop · 88 BPM">{beatLabel}</button>
         <button type="button" className="mg-reading-index" onClick={() => readChapter('mg-toc')}>Track list</button>
         <span className="mg-reading-fill" aria-hidden="true" />
       </nav>

@@ -231,7 +231,7 @@ export function KnightVisionBoard({ onClose }: { onClose: () => void }): React.R
               Hints
             </label>
             <button type="button" className="kv-new" onClick={reset}>New game</button>
-            <a href={knightvision.url} target="_blank" rel="noreferrer">Repo ↗</a>
+            <a href={knightvision.url} target="_blank" rel="noreferrer">Full story ↗</a>
           </div>
           <p className="kv-note">Red arrows: what it’s weighing before it moves. Blue: what it would play in your seat. It rates every legal move at a glance and plays its favourite, without searching ahead. Built with BakerDmo.</p>
         </aside>

@@ -43,7 +43,7 @@ const STOPS: Record<Spot, Stop> = {
   },
   chess: {
     spot: 'window', look: [1.05, 0.6, -1.95], dot: [1.05, 0.82, -1.95],
-    kicker: 'By the window', title: knightvision.title, link: ['Open the repo', knightvision.url], play: true,
+    kicker: 'By the window', title: knightvision.title, link: ['Read the full story', knightvision.url], play: true,
     text: `${knightvision.line} Built with BakerDmo. The real network runs right here in your browser: play it, and watch what it’s weighing before every move.`
   },
   show: {

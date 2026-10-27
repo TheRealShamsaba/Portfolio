@@ -235,7 +235,8 @@ export default function Covers(): React.ReactElement {
           <p>{knightvision.facts}</p>
           <div className="cv-actions">
             <button type="button" className="is-solid" onClick={() => setPlaying(true)}>Play the real network ♞</button>
-            <a href={knightvision.url} target="_blank" rel="noreferrer">The repo ↗</a>
+            <a href={knightvision.url} target="_blank" rel="noreferrer">The full story ↗</a>
+            <a href={knightvision.repo} target="_blank" rel="noreferrer">The repo ↗</a>
           </div>
         </div>
         <Barcode seed={6} label="06 · KV" />

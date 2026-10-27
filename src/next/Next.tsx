@@ -4,18 +4,18 @@ import '../site/site.css'
 import './next.css'
 import './moods.css'
 import { loadFonts } from '../fonts'
+import { preload, prefetchOtherMoods, type Progress } from './preload'
 import { switchView } from '../view'
-import { MOODS, MoodContext, readMood, saveMood, type Mood } from './mood'
+import { MoodContext, readMood, saveMood, type Mood } from './mood'
 import { PALETTES } from './palettes'
+import Nav from './Nav'
 import Work from './Work'
 import Drip from './Drip'
 import Collection from './Collection'
 import Ending from './Ending'
 import useInView from './useInView'
-import { gsap, ScrollTrigger, prefersReducedMotion, scrollToId, useSmoothScroll } from '../site/motion'
-import { profile, show } from '../site/data'
-
-loadFonts()
+import { gsap, getLenis, ScrollTrigger, prefersReducedMotion, useSmoothScroll } from '../site/motion'
+import { medium, profile, show } from '../site/data'
 
 // Prototype of the next direction: a personal brand site, not a portfolio page.
 // One colour, one mark, one object you can touch, real photographs.
@@ -86,22 +86,87 @@ function Contours({ color }: { color: string }): React.ReactElement {
   return <canvas ref={ref} className="nx-contours" aria-hidden="true" />
 }
 
-function Loader({ onDone }: { onDone: () => void }): React.ReactElement | null {
+// The waiting room: downloads everything the mood needs (see preload.ts) while the
+// mark fills up like ink, then lifts away. The light version is always one tap away
+// here, and pushed forward if the download is crawling.
+function Loader({ mood, until, onLoaded, onDone }: { mood: Mood; until?: Promise<void>; onLoaded: () => void; onDone: () => void }): React.ReactElement | null {
   const ref = React.useRef<HTMLDivElement>(null)
+  const [progress, setProgress] = React.useState<Progress>({ fraction: 0, label: 'Getting ready' })
+  const [slow, setSlow] = React.useState(false)
   const [gone, setGone] = React.useState(false)
+  const shown = React.useRef(0)
+  const [count, setCount] = React.useState(0)
+
   React.useEffect(() => {
-    if (prefersReducedMotion()) { setGone(true); onDone(); return }
-    const ctx = gsap.context(() => {
-      gsap.timeline({ onComplete: () => setGone(true) })
-        .fromTo('.nx-loader-mark', { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.7, ease: 'power3.inOut' })
-        .add(onDone, '+=0.05')
-        .to(ref.current, { yPercent: -100, duration: 0.8, ease: 'expo.inOut' })
-    }, ref)
-    return () => ctx.revert()
+    document.documentElement.classList.add('is-loading')
+    const started = performance.now()
+    let cancelled = false
+    const slowTimer = window.setTimeout(() => setSlow(true), 6000)
+    // A ceiling, so a stuck request can never keep anyone out.
+    const ceiling = new Promise<void>((resolve) => window.setTimeout(resolve, 25000))
+    void Promise.race([preload(mood, setProgress), ceiling]).then(async () => {
+      if (cancelled) return
+      setProgress((value) => ({ ...value, fraction: 1, label: 'Opening the doors' }))
+      // Long enough to read as a moment, never as a flash.
+      await new Promise((resolve) => window.setTimeout(resolve, Math.max(0, 900 - (performance.now() - started))))
+      if (cancelled) return
+      onLoaded()
+      // The hero draws its first picture behind the curtain before it lifts.
+      await Promise.race([until ?? Promise.resolve(), new Promise((resolve) => window.setTimeout(resolve, 5000))])
+      await new Promise((resolve) => window.setTimeout(resolve, 250))
+      if (cancelled) return
+      const finish = (): void => {
+        document.documentElement.classList.remove('is-loading')
+        document.documentElement.style.removeProperty('background')
+        getLenis()?.start()
+        setGone(true)
+        onDone()
+      }
+      if (prefersReducedMotion() || document.hidden || !ref.current) { finish(); return }
+      gsap.to(ref.current, { yPercent: -100, duration: 0.9, ease: 'expo.inOut', onComplete: finish })
+    })
+    return () => {
+      cancelled = true
+      window.clearTimeout(slowTimer)
+      document.documentElement.classList.remove('is-loading')
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // The counter eases toward the real figure, so it climbs instead of jumping.
+  React.useEffect(() => {
+    let frame = 0
+    const tick = (): void => {
+      const target = progress.fraction * 100
+      shown.current += (target - shown.current) * 0.12
+      if (target - shown.current < 0.3) shown.current = target
+      setCount(shown.current)
+      if (shown.current !== target) frame = requestAnimationFrame(tick)
+    }
+    frame = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(frame)
+  }, [progress.fraction])
+
   if (gone) return null
-  return <div className="nx-loader" ref={ref}><span className="nx-loader-mark">A.S.</span></div>
+  const done = progress.fraction >= 1
+  return (
+    <div className={`nx-loader is-${mood} ${slow && !done ? 'is-slow' : ''}`} ref={ref} style={{ '--p': count / 100 } as React.CSSProperties} role="status" aria-live="polite">
+      <p className="nx-loader-top"><span>Arian Shamsabadi</span><span>Istanbul · {new Date().getFullYear()}</span></p>
+      <div className="nx-loader-mark" aria-hidden="true">
+        <span className="is-outline">A.S.</span>
+        <span className="is-ink">A.S.</span>
+      </div>
+      <div className="nx-loader-foot">
+        <p className="nx-loader-label">{done ? 'Ready' : `${progress.label}…`}</p>
+        <p className="nx-loader-count" aria-label={`${Math.round(count)} percent loaded`}>{String(Math.floor(count)).padStart(3, '0')}<small>%</small></p>
+      </div>
+      <i className="nx-loader-bar" aria-hidden="true" />
+      <div className="nx-loader-lite">
+        <p>{slow && !done ? 'Taking a while on this connection.' : 'Slow connection?'}</p>
+        <button type="button" onClick={() => switchView('lite')}>Open the light version →</button>
+      </div>
+    </div>
+  )
 }
 
 const manifesto: [string, boolean][] = [
@@ -146,18 +211,25 @@ const Cypher = React.lazy(() => import('./Cypher'))
 const Sketch = React.lazy(() => import('./Sketch'))
 
 export default function Next(): React.ReactElement {
+  const [loaded, setLoaded] = React.useState(false)
+  const [hero] = React.useState(() => {
+    let done = (): void => undefined
+    const drawn = new Promise<void>((resolve) => { done = resolve })
+    return { drawn, done }
+  })
   const [ready, setReady] = React.useState(false)
   const [palette, setPalette] = React.useState(0)
   const [mood, setMood] = React.useState<Mood>(readMood)
-  const [moodOpen, setMoodOpen] = React.useState(false)
   const [wipe, setWipe] = React.useState(0)
   React.useEffect(() => { saveMood(mood) }, [mood])
   // Changing mood: a sheet sweeps across and the site comes back re-dressed.
   const changeMood = (next: Mood): void => {
-    setMoodOpen(false)
     if (next === mood) return
     setWipe((value) => value + 1)
-    window.setTimeout(() => setMood(next), prefersReducedMotion() ? 0 : 380)
+    // Swap under the sheet once the new mood's code and lettering are in.
+    const chunk = { studio: () => import('./Room'), posters: () => import('./Covers'), hiphop: () => import('./Cypher'), sketch: () => import('./Sketch') }[next]
+    const wait = (ms: number): Promise<void> => new Promise((resolve) => window.setTimeout(resolve, ms))
+    void Promise.all([wait(prefersReducedMotion() ? 0 : 380), Promise.race([Promise.all([chunk(), loadFonts(next)]), wait(4000)])]).then(() => setMood(next))
   }
   const rootRef = React.useRef<HTMLDivElement>(null)
   const heroRef = React.useRef<HTMLElement>(null)
@@ -170,7 +242,7 @@ export default function Next(): React.ReactElement {
     const ctx = gsap.context(() => {
       gsap.timeline({ defaults: { ease: 'expo.out' } })
         .from('.nx-name span', { yPercent: 105, duration: 1.4, stagger: 0.08 })
-        .from('.nx-top > *, .nx-hero-foot > *', { y: 16, opacity: 0, duration: 1, stagger: 0.06 }, 0.3)
+        .from('.nv > *, .nx-hero-foot > *', { y: 16, opacity: 0, duration: 1, stagger: 0.06 }, 0.3)
       // The giant name sinks behind the cluster as you leave the hero.
       gsap.to('.nx-name', { yPercent: 30, ease: 'none', scrollTrigger: { trigger: '.nx-hero', start: 'top top', end: 'bottom top', scrub: true } })
       // Manifesto: each word inks in as you read down.
@@ -204,34 +276,9 @@ export default function Next(): React.ReactElement {
     <MoodContext.Provider value={mood}>
     <div className="nx" data-mood={mood} ref={rootRef} style={{ '--nx-accent': accent } as React.CSSProperties}>
       {wipe ? <div key={wipe} className="nx-wipe" aria-hidden="true" /> : null}
-      <Loader onDone={() => setReady(true)} />
+      <Loader mood={mood} until={mood === 'studio' ? hero.drawn : undefined} onLoaded={() => setLoaded(true)} onDone={() => { setReady(true); prefetchOtherMoods(mood) }} />
 
-      <header className="nx-top">
-        <span className="nx-mark">A.S.</span>
-        <nav>
-          {[['work', 'Work'], ['drip', 'Drip'], ['posters', 'Posters']].map(([id, name]) => (
-            <a key={id} href={`#${id}`} className="nx-nav-item" onClick={(event) => { event.preventDefault(); scrollToId(id) }}>{name}</a>
-          ))}
-          <div className="nx-moods">
-            <button type="button" className="nx-mood-toggle" aria-expanded={moodOpen} onClick={() => setMoodOpen((value) => !value)}>
-              Mood: <b>{MOODS.find((item) => item.id === mood)?.label}</b>
-            </button>
-            {moodOpen ? (
-              <ul className="nx-mood-menu">
-                {MOODS.map((item) => (
-                  <li key={item.id}>
-                    <button type="button" className={`is-${item.id} ${item.id === mood ? 'is-on' : ''}`} onClick={() => changeMood(item.id)}>
-                      <span>{item.label}</span><small>{item.line}</small>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-          </div>
-          <button type="button" className="nx-nav-item nx-lite" onClick={() => switchView('lite')}>Light version</button>
-          <a href="#contact" className="nx-talk" onClick={(event) => { event.preventDefault(); scrollToId('contact') }}>Write to me</a>
-        </nav>
-      </header>
+      <Nav mood={mood} onMood={changeMood} />
 
       {mood === 'posters' ? (
         <React.Suspense fallback={null}><Covers /></React.Suspense>
@@ -243,7 +290,7 @@ export default function Next(): React.ReactElement {
       <>
       <section className="nx-hero" ref={heroRef}>
         <h1 className="nx-name" aria-label={profile.name}><span>Arian</span></h1>
-        {ready ? <React.Suspense fallback={null}><Cluster accent={accent} active={heroInView} mood={mood} onPick={() => setPalette((value) => (value + 1) % PALETTES.length)} /></React.Suspense> : null}
+        {loaded ? <React.Suspense fallback={null}><Cluster onReady={hero.done} accent={accent} active={heroInView} mood={mood} onPick={() => setPalette((value) => (value + 1) % PALETTES.length)} /></React.Suspense> : null}
         <div className="nx-hero-foot">
           <p className="nx-intro">Engineer and founder of Real Co. I design and build software for companies in Turkey and Iran, and a few products of my own.</p>
           <p className="nx-hint">Things from my shelves. Push them around, <br />click to change the clay.</p>
@@ -274,7 +321,7 @@ export default function Next(): React.ReactElement {
                   className="nx-photo"
                   style={{ transform: `translate(-50%, -50%) translate3d(${at.x}vw, ${at.y}vh, ${-at.z}px) rotate(${at.tilt}deg)` }}
                 >
-                  <img src={photo.src} alt="" loading="lazy" decoding="async" />
+                  <img src={medium(photo.src)} alt="" loading="lazy" decoding="async" />
                   <figcaption>{photo.caption}</figcaption>
                 </figure>
               )

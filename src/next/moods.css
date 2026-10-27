@@ -1,20 +1,5 @@
 /* ───────────── Moods: one switch re-dresses the whole site ───────────── */
 
-/* The switch */
-.nx-moods { position: relative; }
-.nx-mood-toggle { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font: inherit; color: inherit; }
-.nx-mood-toggle b { font-weight: 700; }
-.nx-mood-menu { position: absolute; top: calc(100% + 6px); right: 0; z-index: 60; display: grid; gap: 4px; width: 280px; padding: 8px; border-radius: 16px; background: #111114; color: #f4f1ea; box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6); mix-blend-mode: normal; }
-.nx-top:has(.nx-mood-menu) { mix-blend-mode: normal; color: var(--nx-ink); }
-.nx-mood-menu button { display: grid; width: 100%; padding: 10px 12px; border-radius: 10px; text-align: left; color: inherit; }
-.nx-mood-menu button:hover, .nx-mood-menu button.is-on { background: rgba(244, 241, 234, 0.1); }
-.nx-mood-menu span { font-size: 22px; line-height: 1.1; }
-.nx-mood-menu small { margin-top: 2px; font: 500 11px var(--f-mono); letter-spacing: 0.04em; opacity: 0.6; }
-.nx-mood-menu .is-studio span { font-family: var(--f-black); }
-.nx-mood-menu .is-posters span { font-family: var(--f-display); text-transform: uppercase; color: #ff4b3a; }
-.nx-mood-menu .is-hiphop span { font-family: var(--f-brush); color: #f2c14e; }
-.nx-mood-menu .is-sketch span { font-family: 'Bangers', var(--f-display); letter-spacing: 0.04em; color: #ff6fa8; }
-
 /* The sweep between moods */
 .nx-wipe { position: fixed; inset: 0; z-index: 500; pointer-events: none; animation: nx-wipe 0.8s cubic-bezier(0.7, 0, 0.2, 1) both; }
 @keyframes nx-wipe { 0% { clip-path: inset(0 100% 0 0); background: var(--nx-ink); } 45%, 55% { clip-path: inset(0 0 0 0); background: var(--nx-ink); } 100% { clip-path: inset(0 0 0 100%); background: var(--nx-ink); } }
@@ -75,6 +60,3 @@
 .nx[data-mood='sketch'] .ns-head h2 { font-family: 'Bangers', var(--f-display); letter-spacing: 0.02em; text-shadow: 4px 3px 0 #ff4f8b, -3px -2px 0 #00d9ff; }
 .nx[data-mood='sketch'] .ns-head h2 em { font-family: 'Caveat', cursive; font-weight: 700; font-style: normal; color: #ffe500; text-shadow: none; }
 
-@media (max-width: 899px) {
-  .nx-mood-menu { position: fixed; top: 64px; left: 12px; right: 12px; width: auto; }
-}

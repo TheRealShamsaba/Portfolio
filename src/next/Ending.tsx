@@ -1,7 +1,7 @@
 import React from 'react'
 import ChessBoard from '../site/ChessBoard'
 import { KnightVisionBoard } from './KnightVisionBoard'
-import { knightvision, profile, show } from '../site/data'
+import { knightvision, medium, profile, show } from '../site/data'
 import { switchView } from '../view'
 
 // Off the clock, then the sign-off: one huge line in the accent colour and every way to reach me.
@@ -37,7 +37,7 @@ export default function Ending(): React.ReactElement {
             <span className="no-arrow">♞</span>
           </button>
           <a className="no-card" href={show.url} target="_blank" rel="noreferrer">
-            <span className="no-media"><img src={show.image} alt="Arian on The Reasonable Show" loading="lazy" /></span>
+            <span className="no-media"><img src={medium(show.image)} alt="Arian on The Reasonable Show" loading="lazy" /></span>
             <span className="no-meta"><b>{show.title}</b><span>Talk show on technology, culture and business</span></span>
             <span className="no-arrow">↗</span>
           </a>

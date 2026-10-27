@@ -1,4 +1,5 @@
 import React from 'react'
+import { medium } from '../site/data'
 
 // My posters as sleeves in a milk crate, flipped the way you dig through records: the
 // ones you've passed tip forward toward you, the next one rises, and the rest fan a
@@ -55,7 +56,7 @@ export default function Crate({ posters, onOpen }: { posters: Poster[]; onOpen: 
               onClick={() => (d === 0 ? pull() : setAt(i))}
               aria-label={d === 0 ? `Pull out ${poster.title}` : `Flip to ${poster.title}`}
             >
-              <img src={poster.image} alt="" loading="lazy" decoding="async" />
+              <img src={medium(poster.image)} alt="" loading="lazy" decoding="async" />
             </button>
           )
         })}

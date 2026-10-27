@@ -2,12 +2,27 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Arian Shamsabadi — Founder & Product Builder</title>
-    <meta name="description" content="Arian Shamsabadi builds products, brands, and systems across AI, software, fashion, and media." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Arian Shamsabadi — Engineer & founder of Real Co.</title>
+    <meta name="description" content="Engineer and founder of Real Co. in Istanbul. I design and build software for companies in Turkey and Iran, and a few products of my own." />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <meta name="theme-color" content="#f2efe8">
+    <!-- The shared faces, requested before any script runs; a face downloads only when text uses it. -->
+    <link rel="stylesheet" data-fonts="base" href="https://fonts.googleapis.com/css2?family=Anton&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=UnifrakturMaguntia&display=swap">
+    <meta name="theme-color" content="#8d95f3">
+    <!-- Paint the loader's colour straight away, so the first frame isn't a white flash. -->
+    <script>
+      try {
+        var q = location.search, v = localStorage.getItem('view'), m = localStorage.getItem('nx-mood')
+        var lite = /[?&]lite\b/.test(q) || (v === 'lite' && !/[?&]full\b/.test(q))
+        var bg = lite ? '#ecedf6' : ({ posters: '#f1ede4', hiphop: '#0b0a10', sketch: '#fdf8ec' })[m] || '#8d95f3'
+        document.documentElement.style.background = bg
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

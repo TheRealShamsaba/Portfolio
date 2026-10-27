@@ -1,6 +1,6 @@
 import React from 'react'
 import { resetScroll, scrollToId } from '../site/motion'
-import { archive, clients, dripApp, knightvision, profile, show, type Chapter } from '../site/data'
+import { archive, clients, dripApp, knightvision, medium, profile, show, type Chapter } from '../site/data'
 import { CaseReader } from './CaseStudy'
 import { KnightVisionBoard } from './KnightVisionBoard'
 import './sketch.css'
@@ -56,11 +56,11 @@ function Art({ src, pos, look }: { src: string; pos?: string; look: Look }): Rea
   if (!src) return <Board />
   return (
     <div className={`sv-art is-${look}`}>
-      <img src={src} alt="" loading="lazy" decoding="async" style={{ objectPosition: pos }} />
+      <img src={medium(src)} alt="" loading="lazy" decoding="async" style={{ objectPosition: pos }} />
       {look === 'brooklyn' ? (
         <>
-          <img className="sv-plate is-c" src={src} alt="" loading="lazy" decoding="async" style={{ objectPosition: pos }} />
-          <img className="sv-plate is-m" src={src} alt="" loading="lazy" decoding="async" style={{ objectPosition: pos }} />
+          <img className="sv-plate is-c" src={medium(src)} alt="" loading="lazy" decoding="async" style={{ objectPosition: pos }} />
+          <img className="sv-plate is-m" src={medium(src)} alt="" loading="lazy" decoding="async" style={{ objectPosition: pos }} />
         </>
       ) : null}
       <i className="sv-fx" />
@@ -286,7 +286,7 @@ export default function Sketch(): React.ReactElement {
         <div className="sv-tapes">
           {originals.map((poster, i) => (
             <button key={poster.id} type="button" className="sv-tape" style={{ '--r': `${((i * 37) % 9) - 4}deg` } as React.CSSProperties} onClick={() => setViewing(i)}>
-              <img src={poster.image} alt={poster.title} loading="lazy" decoding="async" />
+              <img src={medium(poster.image)} alt={poster.title} loading="lazy" decoding="async" />
               <span className="sv-hand">{poster.title}</span>
             </button>
           ))}

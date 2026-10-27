@@ -67,7 +67,22 @@ export function scrollToId(id: string, offset = 0): void {
     lenis.scrollTo(Math.max(0, top - offset), { duration: 1.1 })
   }
   else if (target === 0) window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'instant' : 'smooth' })
-  else window.scrollTo({ top: Math.max(0, target.getBoundingClientRect().top + window.scrollY - offset), behavior: prefersReducedMotion() ? 'instant' : 'smooth' })
+  else {
+    window.scrollTo({ top: Math.max(0, target.getBoundingClientRect().top + window.scrollY - offset), behavior: prefersReducedMotion() ? 'instant' : 'smooth' })
+    settle(target, offset)
+  }
+}
+
+// Images above the target can finish loading mid-journey and push it further down.
+// Once the scroll comes to rest, one correction brings it home.
+function settle(target: HTMLElement, offset: number): void {
+  const fix = (): void => {
+    const off = target.getBoundingClientRect().top - offset
+    const room = document.documentElement.scrollHeight - window.innerHeight - window.scrollY
+    if (Math.abs(off) > 40 && (off < 0 || room > 40)) window.scrollTo({ top: window.scrollY + off, behavior: prefersReducedMotion() ? 'instant' : 'smooth' })
+  }
+  if ('onscrollend' in window) window.addEventListener('scrollend', fix, { once: true })
+  else setTimeout(fix, 1000)
 }
 
 export { gsap, ScrollTrigger }

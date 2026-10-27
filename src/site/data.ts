@@ -101,15 +101,16 @@ export const dripApp = {
   ]
 }
 
-export const knightvision: Chapter = {
+export const knightvision: Chapter & { repo: string } = {
   id: 'knightvision',
   title: 'KnightVision',
-  place: 'Research · Applied AI',
-  line: 'A chess engine that learns by playing itself.',
-  story: 'BakerDmo and I built KnightVision, a chess engine that learns by playing. It starts with nothing but the rules, plays against itself game after game, and keeps what works. Under the hood, a policy network proposes moves, a value network judges positions, and Stockfish acts as the referee. It is where I learned how much engineering sits behind the word AI.',
-  facts: 'Python · PyTorch · Self-play reinforcement learning · Stockfish evaluation',
-  url: 'https://github.com/TheRealShamsaba/KnightVision',
-  host: 'github.com/TheRealShamsaba/KnightVision',
+  place: 'Graduation project · Applied AI',
+  line: 'A chess network that never calculates. It looks once, and moves.',
+  story: 'BakerDmo and I built KnightVision as our graduation project at Istanbul Aydın University. It learned from 84,000 human games, about five million positions, and plays by looking at the board once, without searching a single move ahead. Against Stockfish it rates about 935 Elo, give or take 99. Its own site tells the whole story by post, from the training data to a bug we found after graduation, and you can play it there. It is where I learned how much engineering sits behind the word AI.',
+  facts: 'Python · PyTorch · 84,000 human games · 25.4M weights · Runs in the browser',
+  url: 'https://knightvision.realcompanys.com/',
+  host: 'knightvision.realcompanys.com',
+  repo: 'https://github.com/TheRealShamsaba/KnightVision',
   image: '',
   scene: { bg: '#c9452f', fg: '#fff3e6', accent: '#141414' }
 }

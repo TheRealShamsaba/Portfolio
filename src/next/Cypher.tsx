@@ -34,7 +34,7 @@ const SPOTS: Spot[] = [
   { id: 'delux', name: delux.title, role: delux.place, image: delux.image, crop: [1, 0.428, 0, 0.572], light: '#ff3b30', verse: `${delux.line} ${delux.story}`, client: delux, links: [{ label: `${delux.host} ↗`, href: delux.url }] },
   { id: 'realco', name: realco.title, role: realco.place, image: realco.image, crop: [1, 0.427, 0, 0.573], light: '#5b78ff', verse: `${realco.line} ${realco.story}`, client: realco, links: [{ label: `${realco.host} ↗`, href: realco.url }] },
   { id: 'drip', name: 'Drip', role: 'My own product · Private beta', image: '/projects/drip-app/screens/verdict.webp', crop: [1, 0.626, 0, 0.187], light: '#ff6a3d', verse: `${dripApp.question} ${dripApp.chapters[1].title} ${dripApp.chapters[1].text}`, links: [{ label: 'Join the waitlist ↗', href: dripApp.url }] },
-  { id: 'knightvision', name: `${knightvision.title} feat. BakerDmo`, role: knightvision.place, board: true, crop: [1, 1, 0, 0], light: '#f2c14e', verse: `${knightvision.line} ${knightvision.story}`, play: true, links: [{ label: 'The repo ↗', href: knightvision.url }] },
+  { id: 'knightvision', name: `${knightvision.title} feat. BakerDmo`, role: knightvision.place, board: true, crop: [1, 1, 0, 0], light: '#f2c14e', verse: `${knightvision.line} ${knightvision.story}`, play: true, links: [{ label: 'The site ↗', href: knightvision.url }] },
   { id: 'show', name: show.title, role: 'The podcast I host', image: show.image, crop: [0.442, 1, 0.3, 0], light: '#a45bff', verse: show.text, links: [{ label: 'Episodes ↗', href: 'https://www.youtube.com/@TheReasonableShow' }] }
 ]
 const WORDS = SPOTS.map((spot) => spot.verse.split(/\s+/).filter(Boolean))

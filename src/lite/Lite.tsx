@@ -17,7 +17,7 @@ const programme: { id: string; title: string; kind: string; year: string }[] = [
   { id: 'delux', title: 'Delux Grup', kind: 'Multilingual sales platform', year: '2026' },
   { id: 'realco', title: 'Real Co.', kind: 'Studio website', year: '2026' },
   { id: 'drip', title: 'Drip', kind: 'iOS app, in private beta', year: 'In progress' },
-  { id: 'knightvision', title: 'KnightVision', kind: 'Reinforcement learning research', year: '2025' }
+  { id: 'knightvision', title: 'KnightVision', kind: 'Chess network, graduation project', year: '2025' }
 ]
 
 const letter = [
@@ -247,7 +247,8 @@ export default function Lite({ choice }: { choice: Choice }): React.ReactElement
               <p>{knightvision.story}</p>
               <ul className="lt-facts">{knightvision.facts.split(' · ').map((fact) => <li key={fact}>{fact}</li>)}</ul>
               <p className="lt-row">
-                <a className="lt-visit" href={knightvision.url} target="_blank" rel="noreferrer">The repo ↗</a>
+                <a className="lt-visit" href={knightvision.url} target="_blank" rel="noreferrer">{knightvision.host} ↗</a>
+                <a className="lt-visit" href={knightvision.repo} target="_blank" rel="noreferrer">The repo ↗</a>
                 <button type="button" className="lt-visit" onClick={() => switchView('full')}>Play it in the full version ♞</button>
               </p>
             </div>

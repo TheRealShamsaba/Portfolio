@@ -1,6 +1,6 @@
 import React from 'react'
 import { gsap, prefersReducedMotion } from '../site/motion'
-import { archive } from '../site/data'
+import { archive, medium } from '../site/data'
 
 // The posters, as one screen: a strip of picks you drag or swipe through. Any of them,
 // or "View all", opens the full-screen viewer that walks the whole collection.
@@ -105,7 +105,7 @@ export default function Collection(): React.ReactElement {
         {picks.map((i) => pieces[i]).map((item, n) => (
           <li key={item.id} className="nc-frame">
             <button type="button" onClick={() => { if (!dragged.current) setOpen(picks[n]) }} data-cursor="view">
-              <span className="nc-art"><img src={item.image} alt={item.title} loading="lazy" decoding="async" /></span>
+              <span className="nc-art"><img src={medium(item.image)} alt={item.title} loading="lazy" decoding="async" /></span>
               <span className="nc-label"><b>{item.title}</b><span>{label(item.category)}</span></span>
             </button>
           </li>

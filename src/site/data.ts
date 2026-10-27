@@ -123,4 +123,8 @@ export const show = {
 
 const hiddenPosters = new Set(['satire-handle-with-care'])
 
+// Posters shown small (walls, grids, sleeves, textures) use the 900px copies; the
+// full files are kept for the viewers where you open one up.
+export const medium = (src: string): string => src.replace(/^\/posters\/(?!md\/)/, '/posters/md/')
+
 export const archive = posters.filter((poster) => !poster.explicit && !hiddenPosters.has(poster.id))

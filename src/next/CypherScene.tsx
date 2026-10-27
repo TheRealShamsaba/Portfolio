@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { MeshReflectorMaterial, RoundedBox, useTexture } from '@react-three/drei'
 import { Effect, BlendFunction } from 'postprocessing'
+import { medium } from '../site/data'
 import { Bloom, ChromaticAberration, EffectComposer, Noise, Vignette } from '@react-three/postprocessing'
 
 // The cypher, shot like a late-90s rap video: six projects stand in a circle in a dark
@@ -99,7 +100,7 @@ function useBoard(): THREE.CanvasTexture {
 // One member of the cypher: a speaker cabinet, woofer and horn, its screen on top.
 function Member({ i, member, rig }: { i: number; member: Member; rig: React.MutableRefObject<Rig> }): React.ReactElement {
   const board = useBoard()
-  const photo = useTexture(member.image ?? '/projects/drip-app/screens/verdict.webp')
+  const photo = useTexture(medium(member.image ?? '/projects/drip-app/screens/verdict.webp'))
   const map = React.useMemo(() => {
     if (member.board) return board
     const t = photo.clone()

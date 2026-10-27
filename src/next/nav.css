@@ -1,0 +1,144 @@
+/* ───────────── The header: a floating bar the mood dresses ───────────── */
+/* The bar's colours live on the page root, so the phone menu (a sibling of the bar) shares them. */
+.nx {
+  --nv-bg: rgba(17, 17, 20, 0.66);
+  --nv-fg: #f4f1ea;
+  --nv-mute: rgba(244, 241, 234, 0.62);
+  --nv-line: rgba(244, 241, 234, 0.14);
+  --nv-accent: #8d95f3;
+  --nv-cta-fg: #111114;
+  --nv-radius: 999px;
+  --nv-border: 1px solid var(--nv-line);
+  --nv-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.55);
+  --nv-sheet: #111114;
+}
+.nv {
+  position: fixed; inset: 0 0 auto; z-index: 60;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: max(14px, env(safe-area-inset-top)) var(--gutter) 0;
+  pointer-events: none;
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s;
+  font-family: var(--f-body);
+}
+.nv.is-hidden { transform: translateY(-130%); opacity: 0; }
+.nv > * { pointer-events: auto; }
+
+/* The frosted glass sits on a layer behind each pill, not on the pill itself: a
+   blurred parent would also flatten the mood list that drops out of it. */
+.nv-mark, .nv-bar, .nv-burger {
+  position: relative; isolation: isolate; color: var(--nv-fg);
+  border: var(--nv-border); border-radius: var(--nv-radius); box-shadow: var(--nv-shadow);
+}
+.nv-mark::before, .nv-bar::before, .nv-burger::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--nv-bg);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4);
+}
+.nv-mark { display: grid; place-items: center; height: 48px; padding: 0 16px; font: 400 26px/1 var(--f-black); text-decoration: none; }
+
+.nv-bar { display: flex; align-items: center; gap: 2px; height: 48px; padding: 0 5px 0 8px; font-size: 14px; font-weight: 500; }
+.nv-link { position: relative; display: inline-flex; align-items: center; height: 38px; padding: 0 13px; border-radius: var(--nv-radius); color: var(--nv-mute); text-decoration: none; transition: color 0.25s, background 0.25s; }
+.nv-link:hover { color: var(--nv-fg); background: var(--nv-line); }
+.nv-link.is-here { color: var(--nv-fg); }
+.nv-link.is-here::after { content: ''; position: absolute; left: 50%; bottom: 5px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: var(--nv-accent); }
+.nv-rule { width: 1px; height: 20px; margin: 0 6px; background: var(--nv-line); }
+
+.nv-mood { position: relative; }
+.nv-mood-btn { display: inline-flex; align-items: center; gap: 7px; height: 38px; padding: 0 12px; border-radius: var(--nv-radius); color: var(--nv-fg); font: inherit; transition: background 0.25s; }
+.nv-mood-btn:hover, .nv-mood-btn[aria-expanded='true'] { background: var(--nv-line); }
+.nv-mood-k { color: var(--nv-mute); }
+.nv-mood-btn svg { width: 10px; height: 6px; fill: none; stroke: currentColor; stroke-width: 1.6; transition: transform 0.25s; }
+.nv-mood-btn[aria-expanded='true'] svg { transform: rotate(180deg); }
+.nv-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #8d95f3; box-shadow: 0 0 0 3px rgba(141, 149, 243, 0.22); }
+.nv-dot.is-posters { background: #ff3b22; box-shadow: 0 0 0 3px rgba(255, 59, 34, 0.22); }
+.nv-dot.is-hiphop { background: #f2c14e; box-shadow: 0 0 0 3px rgba(242, 193, 78, 0.22); }
+.nv-dot.is-sketch { background: #ff4f8b; box-shadow: 0 0 0 3px rgba(255, 79, 139, 0.22); }
+
+.nv-cta { display: inline-flex; align-items: center; height: 38px; margin-left: 6px; padding: 0 18px; border-radius: var(--nv-radius); background: var(--nv-accent); color: var(--nv-cta-fg); font-weight: 600; text-decoration: none; transition: transform 0.25s, filter 0.25s; }
+.nv-cta:hover { transform: translateY(-1px); filter: brightness(1.08); }
+
+/* The mood list, laptop */
+.nv-moods { position: absolute; top: calc(100% + 12px); right: -6px; display: grid; gap: 2px; width: 300px; margin: 0; padding: 8px; list-style: none; border-radius: 18px; background: var(--nv-sheet); color: #f4f1ea; border: 1px solid rgba(244, 241, 234, 0.1); box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6); animation: nv-drop 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+@keyframes nv-drop { from { opacity: 0; transform: translateY(-6px) scale(0.98); } }
+.nv-mood-item { display: grid; gap: 2px; width: 100%; padding: 10px 14px; border-radius: 12px; text-align: left; color: inherit; transition: background 0.2s; }
+.nv-mood-item:hover, .nv-mood-item[aria-checked='true'], .nv-mood-item[aria-pressed='true'] { background: rgba(244, 241, 234, 0.08); }
+.nv-mood-item b { font-weight: 400; font-size: 24px; line-height: 1.05; }
+.nv-mood-item small { font: 400 11px/1.4 var(--f-mono); letter-spacing: 0.03em; opacity: 0.6; }
+.nv-mood-item[aria-checked='true'] b::after, .nv-mood-item[aria-pressed='true'] b::after { content: ' ●'; font-size: 0.4em; vertical-align: middle; color: #8d95f3; }
+.nv-mood-item.is-studio b { font-family: var(--f-black); }
+.nv-mood-item.is-posters b { font-family: var(--f-display); text-transform: uppercase; color: #ff5a3f; }
+.nv-mood-item.is-hiphop b { font-family: 'Sedgwick Ave Display', var(--f-brush); color: #f2c14e; }
+.nv-mood-item.is-sketch b { font-family: 'Bangers', var(--f-display); letter-spacing: 0.04em; color: #ff6fa8; }
+.nv-moods-lite { margin-top: 4px; padding-top: 6px; border-top: 1px solid rgba(244, 241, 234, 0.1); }
+.nv-moods-lite button { display: flex; justify-content: space-between; align-items: center; width: 100%; min-height: 40px; padding: 0 14px; border-radius: 10px; color: inherit; font: 500 14px var(--f-body); }
+.nv-moods-lite button:hover { background: rgba(244, 241, 234, 0.08); }
+.nv-moods-lite small { font: 400 11px var(--f-mono); opacity: 0.55; }
+
+/* The phone button and the menu it opens */
+.nv-burger { display: none; align-items: center; gap: 10px; height: 48px; padding: 0 8px 0 16px; font: 600 14px var(--f-body); }
+.nv-lines { position: relative; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--nv-accent); }
+.nv-lines i { position: absolute; width: 14px; height: 1.6px; border-radius: 2px; background: var(--nv-cta-fg); transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.nv-lines i:first-child { transform: translateY(-3px); }
+.nv-lines i:last-child { transform: translateY(3px); }
+.nv-burger[aria-expanded='true'] .nv-lines i:first-child { transform: rotate(45deg); }
+.nv-burger[aria-expanded='true'] .nv-lines i:last-child { transform: rotate(-45deg); }
+
+.nv-sheet {
+  position: fixed; inset: 0; z-index: 59; display: flex; flex-direction: column; gap: 28px;
+  padding: calc(max(14px, env(safe-area-inset-top)) + 72px) var(--gutter) max(22px, env(safe-area-inset-bottom));
+  overflow-y: auto; overscroll-behavior: contain;
+  background: var(--nv-sheet); color: #f4f1ea;
+  clip-path: circle(0 at calc(100% - 46px) 38px); visibility: hidden;
+  transition: clip-path 0.6s cubic-bezier(0.7, 0, 0.2, 1), visibility 0s 0.6s;
+}
+.nv-sheet.is-open { clip-path: circle(150% at calc(100% - 46px) 38px); visibility: visible; transition: clip-path 0.7s cubic-bezier(0.7, 0, 0.2, 1), visibility 0s; }
+.nv-sheet > * { opacity: 0; transform: translateY(18px); transition: opacity 0.3s, transform 0.3s; }
+.nv-sheet.is-open > * { opacity: 1; transform: none; transition: opacity 0.5s 0.25s, transform 0.6s 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.nv-sheet.is-open > :nth-child(2) { transition-delay: 0.35s; }
+.nv-sheet.is-open > :nth-child(3) { transition-delay: 0.45s; }
+.nv-sheet-links { display: grid; }
+.nv-sheet-links a { display: flex; align-items: baseline; gap: 14px; padding: 4px 0; border-bottom: 1px solid rgba(244, 241, 234, 0.1); color: inherit; font: 400 clamp(46px, 13vw, 64px)/1.08 var(--f-display); text-transform: uppercase; text-decoration: none; }
+.nv-sheet-links small { min-width: 22px; font: 400 12px var(--f-mono); color: var(--nv-accent); }
+.nv-sheet-links a.is-here { color: var(--nv-accent); }
+.nv-sheet-k { margin: 0 0 10px; font: 400 11px var(--f-mono); letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.6; }
+.nv-sheet-moods ul { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.nv-sheet-moods .nv-mood-item { height: 100%; padding: 14px; border: 1px solid rgba(244, 241, 234, 0.12); border-radius: 16px; }
+.nv-sheet-moods .nv-mood-item[aria-pressed='true'] { border-color: rgba(244, 241, 234, 0.5); }
+.nv-sheet-moods .nv-mood-item b { font-size: 26px; }
+.nv-sheet-foot { display: grid; gap: 4px; margin-top: auto; padding-top: 18px; border-top: 1px solid rgba(244, 241, 234, 0.12); }
+.nv-sheet-foot a, .nv-sheet-foot button { display: flex; align-items: center; min-height: 44px; color: inherit; font: 500 15px var(--f-body); text-align: left; }
+.nv-sheet-foot a { font-weight: 600; }
+.nv-sheet-foot button { opacity: 0.7; }
+
+@media (max-width: 899px) {
+  .nv-bar { display: none; }
+  .nv-burger { display: inline-flex; }
+  .nv-mark { height: 48px; padding: 0 14px; font-size: 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nv, .nv-sheet, .nv-sheet > * { transition: none !important; }
+}
+
+/* ── Each mood dresses the bar its own way ── */
+.nx[data-mood='posters'] {
+  --nv-bg: #141414; --nv-fg: #f1ede4; --nv-mute: rgba(241, 237, 228, 0.6); --nv-line: rgba(241, 237, 228, 0.16);
+  --nv-accent: #ff3b22; --nv-cta-fg: #fff; --nv-radius: 4px; --nv-shadow: none; --nv-sheet: #141414;
+}
+.nx[data-mood='posters'] .nv-bar, .nx[data-mood='posters'] .nv-burger { text-transform: uppercase; letter-spacing: 0.06em; font-size: 12px; font-weight: 700; }
+.nx[data-mood='posters'] .nv-sheet-links small { color: #ff3b22; }
+
+.nx[data-mood='hiphop'] {
+  --nv-bg: rgba(11, 10, 16, 0.72); --nv-fg: #f4efe6; --nv-mute: rgba(244, 239, 230, 0.6); --nv-line: rgba(242, 193, 78, 0.22);
+  --nv-accent: #f2c14e; --nv-cta-fg: #0b0a10; --nv-sheet: #0b0a10; --nv-shadow: 0 0 40px -12px rgba(242, 193, 78, 0.35);
+}
+.nx[data-mood='hiphop'] .nv-cta { font-family: 'Jost', var(--f-body); font-style: italic; font-weight: 900; text-transform: uppercase; letter-spacing: 0.02em; }
+.nx[data-mood='hiphop'] .nv-sheet-links a { font-family: 'Jost', var(--f-display); font-style: italic; font-weight: 900; }
+
+.nx[data-mood='sketch'] {
+  --nv-bg: #fdf8ec; --nv-fg: #15132b; --nv-mute: rgba(21, 19, 43, 0.6); --nv-line: rgba(21, 19, 43, 0.12);
+  --nv-accent: #ff4f8b; --nv-cta-fg: #15132b; --nv-radius: 12px; --nv-border: 2.5px solid #15132b; --nv-shadow: 4px 4px 0 #15132b; --nv-sheet: #15132b;
+}
+.nx[data-mood='sketch'] .nv-bar, .nx[data-mood='sketch'] .nv-burger { font-family: 'Comic Neue', var(--f-body); font-weight: 700; font-size: 15px; }
+.nx[data-mood='sketch'] .nv-cta { border: 2px solid #15132b; font-family: 'Bangers', var(--f-display); letter-spacing: 0.06em; font-size: 17px; font-weight: 400; }
+.nx[data-mood='sketch'] .nv-lines { border: 2px solid #15132b; }
+.nx[data-mood='sketch'] .nv-sheet-links a { font-family: 'Bangers', var(--f-display); letter-spacing: 0.02em; }
+.nx[data-mood='sketch'] .nv-mark { transform: rotate(-2deg); }

@@ -99,7 +99,17 @@ const SETS: Record<Mood, { finish: ClayFinish; accent?: string; ink: string; bon
   sketch: { finish: 'ink', accent: '#ff6fa8', ink: '#3a6df0', bone: '#fdf8ec' }
 }
 
-function Scene({ accent, double, mood }: { accent: string; double: boolean; mood: Mood }): React.ReactElement {
+// Mounts only once the physics engine is up and every piece exists, so the loader
+// can wait for it and lift onto a finished picture.
+function Ready({ onReady }: { onReady?: () => void }): null {
+  React.useEffect(() => {
+    const id = requestAnimationFrame(() => requestAnimationFrame(() => onReady?.()))
+    return () => cancelAnimationFrame(id)
+  }, [onReady])
+  return null
+}
+
+function Scene({ accent, double, mood, onReady }: { accent: string; double: boolean; mood: Mood; onReady?: () => void }): React.ReactElement {
   const [hover, setHover] = React.useState<string | null>(null)
   const set = SETS[mood]
   const tint = set.accent ?? accent
@@ -116,6 +126,7 @@ function Scene({ accent, double, mood }: { accent: string; double: boolean; mood
         <Physics gravity={[0, 0, 0]}>
           <Pointer />
           {pieces.map((kind, i) => <Piece key={i} index={i} kind={kind} clay={clay(i)} onHover={setHover} />)}
+          <Ready onReady={onReady} />
         </Physics>
       </ClayFinishContext.Provider>
       <Caption label={hover} />
@@ -128,7 +139,7 @@ function Scene({ accent, double, mood }: { accent: string; double: boolean; mood
   )
 }
 
-export default function Cluster({ accent, active, mood, onPick }: { accent: string; active: boolean; mood: Mood; onPick: () => void }): React.ReactElement {
+export default function Cluster({ accent, active, mood, onPick, onReady }: { accent: string; active: boolean; mood: Mood; onPick: () => void; onReady?: () => void }): React.ReactElement {
   const phone = React.useMemo(() => window.matchMedia('(max-width: 899px)').matches, [])
   return (
     <Canvas
@@ -140,7 +151,7 @@ export default function Cluster({ accent, active, mood, onPick }: { accent: stri
       camera={{ position: [0, 0, phone ? 24 : 20], fov: 32, near: 1, far: 60 }}
       onClick={onPick}
     >
-      <Scene accent={accent} double={!phone} mood={mood} />
+      <Scene accent={accent} double={!phone} mood={mood} onReady={onReady} />
     </Canvas>
   )
 }

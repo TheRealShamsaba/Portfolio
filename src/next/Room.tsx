@@ -5,7 +5,7 @@ import { Environment, Html, Lightformer, RoundedBox, SoftShadows, useCursor, use
 import MoodEffects from './MoodEffects'
 import type { Mood } from './mood'
 import { scrollToId } from '../site/motion'
-import { clients, dripApp, knightvision, profile } from '../site/data'
+import { clients, dripApp, knightvision, medium, profile } from '../site/data'
 import { Basketball, Books, F1Car, IPod, Mug, PodcastMic, SneakerBox, SportsCar, useCanvasTexture } from './Props'
 import useInView from './useInView'
 import CityView from './CityView'
@@ -380,7 +380,7 @@ function DripPhone(): React.ReactElement {
 // ───────────── Walls: posters, hoops, the sign ─────────────
 
 function Framed({ src, position, height, rotation = [0, Math.PI / 2, 0] }: { src: string; position: Vec; height: number; rotation?: Vec }): React.ReactElement {
-  const texture = useTexture(src)
+  const texture = useTexture(medium(src))
   texture.colorSpace = THREE.SRGBColorSpace
   const image = texture.image as HTMLImageElement
   const width = height * (image.width / image.height)
@@ -608,6 +608,19 @@ const LIGHTS: Record<Mood, { ambient: string; sky: string; ground: string; moon:
   sketch: { ambient: '#fff1d8', sky: '#bcd0ff', ground: '#6a4a30', moon: '#d7e2ff', ceiling: '#ffe6bf', ceilingPower: 3.4, lamp: '#ffc98a' }
 }
 
+// Nothing in the room moves, so its shadows are drawn once instead of every frame
+// (again when a mood relights it), and every material is compiled as soon as the
+// furniture is in, rather than the moment the room first scrolls into view.
+function Settle({ mood }: { mood: Mood }): null {
+  const { gl, scene, camera } = useThree()
+  React.useEffect(() => {
+    gl.shadowMap.autoUpdate = false
+    gl.shadowMap.needsUpdate = true
+    gl.compile(scene, camera)
+  }, [gl, scene, camera, mood])
+  return null
+}
+
 function Scene({ spot, focus, phone, mood, onWalk, onPick, drag }: { spot: number; focus: Spot | null; phone: boolean; mood: Mood; onWalk: (i: number) => void; onPick: (id: Spot) => void; drag: React.MutableRefObject<{ yaw: number; pitch: number }> }): React.ReactElement {
   const light = LIGHTS[mood]
   return (
@@ -618,9 +631,9 @@ function Scene({ spot, focus, phone, mood, onWalk, onPick, drag }: { spot: numbe
       <ambientLight intensity={mood === 'sketch' ? 0.45 : mood === 'posters' ? 0.5 : 0.18} color={light.ambient} />
       <hemisphereLight args={[light.sky, light.ground, mood === 'sketch' ? 0.6 : 0.35]} />
       {/* Moonlight through the window. */}
-      <directionalLight position={[3.5, 4.2, -8]} intensity={1.1} color={light.moon} castShadow shadow-mapSize={[phone ? 2048 : 4096, phone ? 2048 : 4096]} shadow-bias={-0.0003} shadow-normalBias={0.02} shadow-camera-left={-3.4} shadow-camera-right={3.4} shadow-camera-top={3.2} shadow-camera-bottom={-3.2} shadow-camera-near={4} shadow-camera-far={14} />
+      <directionalLight position={[3.5, 4.2, -8]} intensity={1.1} color={light.moon} castShadow shadow-mapSize={[2048, 2048]} shadow-bias={-0.0003} shadow-normalBias={0.02} shadow-camera-left={-3.4} shadow-camera-right={3.4} shadow-camera-top={3.2} shadow-camera-bottom={-3.2} shadow-camera-near={4} shadow-camera-far={14} />
       {/* The ceiling lamp and the desk lamp: the warm lights of the room. */}
-      <pointLight position={[0, 1.75, 0]} color={light.ceiling} intensity={light.ceilingPower} distance={6} decay={1.4} castShadow={!phone} />
+      <pointLight position={[0, 1.75, 0]} color={light.ceiling} intensity={light.ceilingPower} distance={6} decay={1.4} />
       <spotLight position={[-1.95, 1.35, -2.2]} angle={0.8} penumbra={0.8} intensity={6} distance={3} decay={1.6} color={light.lamp} castShadow={!phone} target-position={[-1.45, 0.74, -2.0]} />
       <Environment resolution={128} frames={1}>
         <Lightformer form="rect" intensity={1} color="#8f99ff" position={[1.3, 2, -4]} scale={[3, 2, 1]} />
@@ -629,6 +642,7 @@ function Scene({ spot, focus, phone, mood, onWalk, onPick, drag }: { spot: numbe
       <Rig spot={spot} focus={focus} phone={phone} drag={drag} />
       <React.Suspense fallback={null}>
         <Furniture focus={focus} spot={spot} onPick={onPick} />
+        <Settle mood={mood} />
       </React.Suspense>
       {!focus ? SPOTS.map((_, i) => (i !== spot ? <FloorSpot key={i} index={i} onWalk={onWalk} /> : null)) : null}
       <MoodEffects mood={mood} phone={phone} />

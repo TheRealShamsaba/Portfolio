@@ -1,6 +1,6 @@
 import React from 'react'
 import { resetScroll } from '../site/motion'
-import { archive, clients, dripApp, knightvision, profile, show, type Chapter } from '../site/data'
+import { archive, clients, dripApp, knightvision, medium, profile, show, type Chapter } from '../site/data'
 import { CaseReader } from './CaseStudy'
 import { KnightVisionBoard } from './KnightVisionBoard'
 import { fit, liveType, type Effect, type Paint } from './livetype'
@@ -243,7 +243,7 @@ export default function Covers(): React.ReactElement {
 
       <Cover
         n={7} className="is-show" effect="ripple" paint={paintShow} fonts={[BRUSH(100)]} title={show.title} hint="Move over it"
-        back={<img className="cv-photo" src={show.image} alt="" loading="lazy" decoding="async" />}
+        back={<img className="cv-photo" src={medium(show.image)} alt="" loading="lazy" decoding="async" />}
       >
         <div className="cv-lines">
           <p className="cv-kick">The podcast I host</p>
@@ -264,7 +264,7 @@ export default function Covers(): React.ReactElement {
         <div className="cv-grid">
           {originals.map((poster, i) => (
             <button key={poster.id} type="button" onClick={() => setViewing(i)}>
-              <img src={poster.image} alt={poster.title} loading="lazy" decoding="async" />
+              <img src={medium(poster.image)} alt={poster.title} loading="lazy" decoding="async" />
             </button>
           ))}
         </div>

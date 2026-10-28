@@ -130,8 +130,12 @@ function Board(): React.ReactElement {
 }
 
 // Doodle on the sketchbook: a pen that leaves wobbly ink lines that boil like a drawing.
-function Doodle(): React.ReactElement {
+// A mouse draws whenever it's pressed. A finger scrolls the page as usual, and draws
+// only once the pen is picked up, so reading down never leaves stray marks.
+function Doodle({ pen }: { pen: boolean }): React.ReactElement {
   const ref = React.useRef<HTMLCanvasElement>(null)
+  const penRef = React.useRef(pen)
+  penRef.current = pen
   React.useEffect(() => {
     const canvas = ref.current
     const host = canvas?.parentElement
@@ -150,33 +154,41 @@ function Doodle(): React.ReactElement {
     }
     size()
     let last: { x: number; y: number } | null = null
+    let finger = -1
     const at = (event: PointerEvent): { x: number; y: number } => {
       const box = canvas.getBoundingClientRect()
       return { x: event.clientX - box.left, y: event.clientY - box.top }
     }
     const down = (event: PointerEvent): void => {
       if ((event.target as HTMLElement).closest('a, button')) return
+      if (event.pointerType !== 'mouse' && !penRef.current) return
+      if (!event.isPrimary) return
+      finger = event.pointerId
       last = at(event)
+      // The ink only starts to boil once there is some: the filter is costly on a blank sheet.
+      canvas.classList.add('has-ink')
     }
     const move = (event: PointerEvent): void => {
-      if (!last) return
-      const p = at(event)
+      if (!last || event.pointerId !== finger) return
+      // A fast stroke can arrive as several points in one event; draw through all of them.
+      const points = event.getCoalescedEvents?.() ?? [event]
       ctx.beginPath()
       ctx.moveTo(last.x, last.y)
-      ctx.lineTo(p.x, p.y)
+      for (const point of points.length ? points : [event]) { last = at(point); ctx.lineTo(last.x, last.y) }
       ctx.stroke()
-      last = p
     }
-    const up = (): void => { last = null }
+    const up = (event: PointerEvent): void => { if (event.pointerId === finger) { last = null; finger = -1 } }
     host.addEventListener('pointerdown', down)
     host.addEventListener('pointermove', move)
     window.addEventListener('pointerup', up)
+    window.addEventListener('pointercancel', up)
     const observer = new ResizeObserver(size)
     observer.observe(host)
     return () => {
       host.removeEventListener('pointerdown', down)
       host.removeEventListener('pointermove', move)
       window.removeEventListener('pointerup', up)
+      window.removeEventListener('pointercancel', up)
       observer.disconnect()
     }
   }, [])
@@ -188,6 +200,7 @@ export default function Sketch(): React.ReactElement {
   const [reading, setReading] = React.useState<Chapter | null>(null)
   const [playing, setPlaying] = React.useState(false)
   const [viewing, setViewing] = React.useState<number | null>(null)
+  const [pen, setPen] = React.useState(false)
   const originals = archive.filter((poster) => poster.category !== 'media')
   const viewed = viewing === null ? null : originals[viewing]
   const [user, domain] = profile.email.split('@')
@@ -209,7 +222,12 @@ export default function Sketch(): React.ReactElement {
       })
     }, { threshold: 0.35 })
     pages.forEach((page) => observer.observe(page))
-    return () => observer.disconnect()
+    // Pages well out of view pause their boiling and flicker.
+    const away = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => entry.target.classList.toggle('is-away', !entry.isIntersecting))
+    }, { rootMargin: '25% 0px' })
+    rootRef.current?.querySelectorAll('.sv-book, .sv-page').forEach((page) => away.observe(page))
+    return () => { observer.disconnect(); away.disconnect() }
   }, [])
 
   React.useEffect(() => {
@@ -239,8 +257,8 @@ export default function Sketch(): React.ReactElement {
       </svg>
 
       {/* The sketchbook: lined paper, my name lettered like a cover, a pen you can draw with. */}
-      <section className="sv-book" id="top">
-        <Doodle />
+      <section className={`sv-book ${pen ? 'is-pen' : ''}`} id="top">
+        <Doodle pen={pen} />
         <div className="sv-holes" aria-hidden="true"><i /><i /><i /></div>
         <p className="sv-hand sv-date">Istanbul, 2026</p>
         <h1 className="sv-name"><span>Arian</span><span>Shamsabadi</span></h1>
@@ -252,6 +270,9 @@ export default function Sketch(): React.ReactElement {
         <svg className="sv-scribble is-ball" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="40" /><path d="M10 50 H90 M50 10 V90 M22 22 C40 40 40 60 22 78 M78 22 C60 40 60 60 78 78" /></svg>
         <svg className="sv-scribble is-arrow" viewBox="0 0 120 80" aria-hidden="true"><path d="M8 12 C 40 8, 80 30, 96 64" /><path d="M76 60 L 98 66 L 102 44" /></svg>
         <p className="sv-hand sv-try">go on, draw on it</p>
+        <button type="button" className="sv-pen" aria-pressed={pen} onClick={() => setPen((value) => !value)}>
+          {pen ? 'done, let me scroll' : '✎ pick up the pen'}
+        </button>
       </section>
 
       {UNIVERSES.map((u, i) => (

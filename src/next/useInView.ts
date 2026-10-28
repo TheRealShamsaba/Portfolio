@@ -6,7 +6,9 @@ export default function useInView(ref: React.RefObject<Element | null>, margin =
   React.useEffect(() => {
     const el = ref.current
     if (!el) return
-    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { rootMargin: margin })
+    // A section that only touches the edge of the screen counts as intersecting; it isn't
+    // visible, so it shouldn't be drawing yet.
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting && entry.intersectionRatio > 0), { rootMargin: margin, threshold: [0, 0.001] })
     observer.observe(el)
     return () => observer.disconnect()
   }, [ref, margin])

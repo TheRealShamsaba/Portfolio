@@ -25,7 +25,15 @@
     radial-gradient(120% 90% at 50% 40%, transparent 60%, rgba(120, 96, 50, 0.12)),
     var(--paper);
 }
-.sv-doodle { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; pointer-events: none; animation: sv-boil 0.25s steps(1) infinite; }
+.sv-doodle { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; pointer-events: none; }
+.sv-doodle.has-ink { animation: sv-boil 0.25s steps(1) infinite; }
+/* Off screen, nothing keeps boiling or flickering. */
+.is-away .sv-name, .is-away .sv-scribble, .is-away .sv-doodle, .is-away .sv-fx, .is-away .sv-view img { animation-play-state: paused; }
+/* The pen, for fingers: while it's up, the sheet takes the touch instead of the page. */
+.sv-pen { display: none; position: absolute; right: 18px; bottom: 22px; z-index: 4; padding: 10px 16px; border: 2px solid #1b2a8a; border-radius: 999px; background: #fffdf5; color: #1b2a8a; font: 700 22px/1 var(--hand); box-shadow: 3px 3px 0 #1b2a8a; rotate: -2deg; }
+.sv-pen[aria-pressed='true'] { background: #1b2a8a; color: #fffdf5; box-shadow: 3px 3px 0 #ff2d78; }
+.sv-book.is-pen { touch-action: none; }
+@media (pointer: coarse) { .sv-pen { display: inline-flex; } .sv-try { display: none; } }
 .sv-book:first-of-type { cursor: crosshair; }
 .sv-holes { position: absolute; left: calc(var(--gutter) * 0.5); top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: space-around; }
 .sv-holes i { width: 22px; height: 22px; border-radius: 50%; background: #0c0b14; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6); }

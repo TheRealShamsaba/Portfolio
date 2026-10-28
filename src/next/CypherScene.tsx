@@ -4,6 +4,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { MeshReflectorMaterial, RoundedBox, useTexture } from '@react-three/drei'
 import { Effect, BlendFunction } from 'postprocessing'
 import { medium } from '../site/data'
+import { Quality } from './quality'
 import { Bloom, ChromaticAberration, EffectComposer, Noise, Vignette } from '@react-three/postprocessing'
 
 // The cypher, shot like a late-90s rap video: six projects stand in a circle in a dark
@@ -406,13 +407,23 @@ export default function CypherScene({ members, rig, active }: { members: Member[
       <Smoke count={phone ? 5 : 10} />
       <Floor phone={phone} />
       <Rigging rig={rig} phone={phone} />
-      <EffectComposer multisampling={0}>
-        <Fisheye rig={rig} max={phone ? 0.1 : 0.14} />
-        <Bloom mipmapBlur luminanceThreshold={0.85} intensity={phone ? 0.7 : 1} radius={0.65} />
-        <ChromaticAberration offset={new THREE.Vector2(0.0012, 0.0008)} radialModulation={false} modulationOffset={0} />
-        <Noise opacity={0.14} blendFunction={BlendFunction.OVERLAY} />
-        <Vignette offset={0.2} darkness={0.85} />
-      </EffectComposer>
+      {/* Each effect is another full-screen pass; a phone keeps the three that make the look. */}
+      {phone ? (
+        <EffectComposer multisampling={0}>
+          <Fisheye rig={rig} max={0.1} />
+          <Bloom mipmapBlur luminanceThreshold={0.85} intensity={0.7} radius={0.65} />
+          <Vignette offset={0.2} darkness={0.85} />
+        </EffectComposer>
+      ) : (
+        <EffectComposer multisampling={0}>
+          <Fisheye rig={rig} max={0.14} />
+          <Bloom mipmapBlur luminanceThreshold={0.85} intensity={1} radius={0.65} />
+          <ChromaticAberration offset={new THREE.Vector2(0.0012, 0.0008)} radialModulation={false} modulationOffset={0} />
+          <Noise opacity={0.14} blendFunction={BlendFunction.OVERLAY} />
+          <Vignette offset={0.2} darkness={0.85} />
+        </EffectComposer>
+      )}
+      {active ? <Quality id="cypher" max={phone ? 1.3 : 1.6} /> : null}
     </Canvas>
   )
 }

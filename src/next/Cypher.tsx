@@ -43,6 +43,7 @@ const PER_LINE = 8
 export default function Cypher(): React.ReactElement {
   const stageRef = React.useRef<HTMLElement>(null)
   const captionRef = React.useRef<HTMLParagraphElement>(null)
+  const listRef = React.useRef<HTMLOListElement>(null)
   const deckRef = React.useRef<Deck | null>(null)
   const rig = React.useRef<Rig>({ intro: 0, active: -1, kick: 0, snare: 0 })
   const [active, setActive] = React.useState(-1)
@@ -69,6 +70,7 @@ export default function Cypher(): React.ReactElement {
     let verseAt = 0
     let lastActive = -2
     let lastWord = -1
+    let lastKick = ''
     let prev = performance.now()
     let raf = 0
     const frame = (now: number): void => {
@@ -96,7 +98,10 @@ export default function Cypher(): React.ReactElement {
       const kick = still ? 0 : Math.exp(-since(HITS.kick, pos) * 9)
       const snare = still ? 0 : Math.exp(-since(HITS.snare, pos) * 11)
       rig.current = { intro, active: index, kick, snare }
-      stage.style.setProperty('--kick', kick.toFixed(3))
+      // Only the lit dot uses the kick, so it's set on the list, not the whole stage, and
+      // only when it changes: a style write high up restyles everything under it.
+      const k = inView ? kick.toFixed(2) : '0'
+      if (k !== lastKick) { lastKick = k; listRef.current?.style.setProperty('--kick', k) }
 
       // The verse: a word every eighth note, a line of eight to a bar.
       if (index >= 0 && captionRef.current) {
@@ -176,7 +181,7 @@ export default function Cypher(): React.ReactElement {
             </div>
           </div>
 
-          <ol className={`cy-list ${active >= 0 ? 'is-on' : ''}`} aria-label="Who's in the cypher">
+          <ol ref={listRef} className={`cy-list ${active >= 0 ? 'is-on' : ''}`} aria-label="Who's in the cypher">
             {SPOTS.map((s, i) => (
               <li key={s.id} className={active === i ? 'is-on' : ''}>
                 <button type="button" onClick={() => goTo(i)}><i style={{ background: s.light }} />{s.name}</button>

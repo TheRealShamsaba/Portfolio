@@ -234,6 +234,7 @@ export default function Next(): React.ReactElement {
   const rootRef = React.useRef<HTMLDivElement>(null)
   const heroRef = React.useRef<HTMLElement>(null)
   const heroInView = useInView(heroRef)
+  const touch = React.useMemo(() => window.matchMedia('(pointer: coarse)').matches, [])
   const accent = PALETTES[palette].accent
   useSmoothScroll()
 
@@ -293,7 +294,7 @@ export default function Next(): React.ReactElement {
         {loaded ? <React.Suspense fallback={null}><Cluster onReady={hero.done} accent={accent} active={heroInView} mood={mood} onPick={() => setPalette((value) => (value + 1) % PALETTES.length)} /></React.Suspense> : null}
         <div className="nx-hero-foot">
           <p className="nx-intro">Engineer and founder of Real Co. I design and build software for companies in Turkey and Iran, and a few products of my own.</p>
-          <p className="nx-hint">Things from my shelves. Push them around, <br />click to change the clay.</p>
+          <p className="nx-hint">{touch ? <>Things from my shelves. Swipe across to push them, <br />tap to change the clay.</> : <>Things from my shelves. Push them around, <br />click to change the clay.</>}</p>
         </div>
       </section>
 

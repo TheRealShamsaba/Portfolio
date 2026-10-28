@@ -10,6 +10,7 @@ import { Basketball, Books, F1Car, IPod, Mug, PodcastMic, SneakerBox, SportsCar,
 import useInView from './useInView'
 import CityView from './CityView'
 import { KnightVisionBoard } from './KnightVisionBoard'
+import { Quality } from './quality'
 
 // The studio: my room in Istanbul at night, in real metres. You walk it by tapping
 // the glowing spots on the floor and look around by dragging. Everything that matters
@@ -612,12 +613,18 @@ const LIGHTS: Record<Mood, { ambient: string; sky: string; ground: string; moon:
 // (again when a mood relights it), and every material is compiled as soon as the
 // furniture is in, rather than the moment the room first scrolls into view.
 function Settle({ mood }: { mood: Mood }): null {
-  const { gl, scene, camera } = useThree()
+  const { gl, scene, camera, advance } = useThree()
   React.useEffect(() => {
     gl.shadowMap.autoUpdate = false
     gl.shadowMap.needsUpdate = true
-    gl.compile(scene, camera)
-  }, [gl, scene, camera, mood])
+    // Two real frames now, while the room is still below the screen: the first lights it
+    // (the environment is drawn on a frame), the second compiles every shader against
+    // that light, uploads every texture and draws the shadows. Otherwise all of it lands
+    // the moment the room scrolls in.
+    const now = performance.now()
+    advance(now)
+    advance(now + 16)
+  }, [gl, scene, camera, mood, advance])
   return null
 }
 
@@ -654,7 +661,9 @@ function Scene({ spot, focus, phone, mood, onWalk, onPick, drag }: { spot: numbe
 
 export default function Room({ mood = 'studio' }: { mood?: Mood }): React.ReactElement {
   const rootRef = React.useRef<HTMLElement>(null)
-  const inView = useInView(rootRef, '100px')
+  // Draws only while some of it is on screen; just below the fold it would cost a phone
+  // every frame for nothing.
+  const inView = useInView(rootRef)
   const [spot, setSpot] = React.useState(0)
   const [focus, setFocus] = React.useState<Spot | null>(null)
   const [channel, setChannel] = React.useState(0)
@@ -682,15 +691,26 @@ export default function Room({ mood = 'studio' }: { mood?: Mood }): React.ReactE
   }, [focus])
 
   // Drag to look around. Phones only turn left and right, so up-and-down still scrolls the page.
+  // The drag ends however the finger does: lifted, or handed to the page when it starts to
+  // scroll (a cancel, not an up). Only the finger that started it can steer.
   const onPointerDown = (event: React.PointerEvent): void => {
+    if (!event.isPrimary) return
+    const id = event.pointerId
     const start = { x: event.clientX, y: event.clientY, yaw: drag.current.yaw, pitch: drag.current.pitch }
     const move = (e: PointerEvent): void => {
+      if (e.pointerId !== id) return
       drag.current.yaw = start.yaw + (e.clientX - start.x) * 0.0045
       if (!phone) drag.current.pitch = THREE.MathUtils.clamp(start.pitch + (e.clientY - start.y) * 0.0035, -0.8, 0.8)
     }
-    const up = (): void => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up) }
+    const up = (e: PointerEvent): void => {
+      if (e.pointerId !== id) return
+      window.removeEventListener('pointermove', move)
+      window.removeEventListener('pointerup', up)
+      window.removeEventListener('pointercancel', up)
+    }
     window.addEventListener('pointermove', move)
     window.addEventListener('pointerup', up)
+    window.addEventListener('pointercancel', up)
   }
 
   return (
@@ -705,6 +725,7 @@ export default function Room({ mood = 'studio' }: { mood?: Mood }): React.ReactE
           onPointerMissed={() => setFocus(null)}
         >
           <Scene spot={spot} focus={focus} phone={phone} mood={mood} onWalk={walk} onPick={pick} drag={drag} />
+          {inView ? <Quality id="room" max={phone ? 1.3 : 1.75} /> : null}
         </Canvas>
       </div>
 
